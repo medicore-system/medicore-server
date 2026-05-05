@@ -16,14 +16,12 @@ Sigue estos pasos para tener el entorno listo:
    cd medicore-server
 
 2. **Ejecutar la API:**
-
-  Una vez instaladas las dependencias, inicia el servidor con:
-
-  ```bash
-  ./mvnw spring-boot:run
+    Una vez instaladas las dependencias, inicia el servidor con:
+    ```bash
+    ./mvnw spring-boot:run
   
 3. **Endpoints de Prueba**
+    Método: GET
+    ```bash 
+    URL: http://localhost:8080/api/v1/health/check?ciudad=Manizales
 
-  Método: GET
-  ```bash 
-  URL: http://localhost:8080/api/v1/health/check?ciudad=Manizales
