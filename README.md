@@ -12,7 +12,7 @@ Sigue estos pasos para tener el entorno listo:
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone [https://github.com/TU_USUARIO/medicore-server.git](https://github.com/TU_USUARIO/medicore-server.git)
+   git clone https://github.com/yefervalencia/medicore-server.git
    cd medicore-server
 
 2. **Ejecutar la API:**
