@@ -1,8 +1,6 @@
 package com.medicore.api.services.impl;
 
-import com.medicore.api.dtos.HospitalRequest;
-import com.medicore.api.dtos.HospitalResponse;
-import com.medicore.api.dtos.HospitalUpdateRequest;
+import com.medicore.api.dtos.*;
 import com.medicore.api.entities.Ciudad;
 import com.medicore.api.entities.Hospital;
 import com.medicore.api.repositories.CiudadRepository;
@@ -77,6 +75,36 @@ public class HospitalServiceImpl implements IHospitalService {
                 .stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public HospitalDetailResponse getHospitalByCodigo(String codigo) {
+        Hospital hospital = hospitalRepository.findById(codigo)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Hospital no encontrado con código: " + codigo));
+
+        List<AreaInternaResponse> areas = hospital.getAreasInternas()
+                .stream()
+                .map(hai -> AreaInternaResponse.builder()
+                        .codigo(hai.getCodigo())
+                        .nombre(hai.getNombre())
+                        .descripcion(hai.getDescripcion())
+                        .codigoAreaInterna(hai.getAreaInterna().getCodigo())
+                        .nombreAreaInterna(hai.getAreaInterna().getNombre())
+                        .build())
+                .collect(Collectors.toList());
+
+        return HospitalDetailResponse.builder()
+                .codigo(hospital.getCodigo())
+                .nombre(hospital.getNombre())
+                .direccion(hospital.getDireccion())
+                .telefono(hospital.getTelefono())
+                .estado(hospital.getEstado())
+                .codigoCiudad(hospital.getCiudad().getCodigo())
+                .nombreCiudad(hospital.getCiudad().getNombre())
+                .areasInternas(areas)
+                .build();
     }
 
     private Ciudad validarCiudad(String codigoCiudad){

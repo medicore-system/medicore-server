@@ -1,5 +1,6 @@
 package com.medicore.api.services;
 
+import com.medicore.api.dtos.HospitalDetailResponse;
 import com.medicore.api.dtos.HospitalRequest;
 import com.medicore.api.dtos.HospitalResponse;
 import com.medicore.api.dtos.HospitalUpdateRequest;
@@ -13,4 +14,6 @@ public interface IHospitalService {
     HospitalResponse updateHospital(HospitalUpdateRequest request, String id);
 
     List<HospitalResponse> getAllHospitals();
+
+    HospitalDetailResponse getHospitalByCodigo(String codigo);
 }
