@@ -1,0 +1,254 @@
+create table tipo_documento (
+    id     serial      primary key,
+    nombre varchar(50) not null unique
+);
+
+create table especialidad (
+    id     serial       primary key,
+    nombre varchar(100) not null unique
+);
+
+create table tipo_cita (
+    id     serial      primary key,
+    nombre varchar(50) not null unique
+);
+
+create table rol_usuario (
+    id     serial      primary key,
+    nombre varchar(50) not null unique
+);
+
+create table departamento (
+    id     serial       primary key,
+    nombre varchar(100) not null unique
+);
+
+create table ciudad (
+    codigo          varchar(50)  primary key,
+    nombre          varchar(50)  not null,
+    id_departamento int          not null,
+    estado          boolean      not null default true,
+    constraint fk_ciudad_departamento foreign key (id_departamento) references departamento(id)
+);
+
+create table eps (
+    codigo varchar(50) primary key,
+    nombre varchar(50) not null
+);
+
+create table hospital (
+    codigo        varchar(50)  primary key,
+    nombre        varchar(50)  not null,
+    direccion     varchar(150) not null,
+    telefono      varchar(20)  not null,
+    estado        boolean      not null default true,
+    codigo_ciudad varchar(50)  not null,
+    constraint fk_hospital_ciudad foreign key (codigo_ciudad) references ciudad(codigo)
+);
+
+create table area_interna (
+    codigo varchar(50) primary key,
+    nombre varchar(50) not null
+);
+
+create table hospital_area_interna (
+    codigo               varchar(50)  primary key,
+    nombre               varchar(100),
+    descripcion          varchar(250),
+    codigo_hospital      varchar(50)  not null,
+    codigo_area_interna  varchar(50)  not null,
+    constraint fk_hai_hospital      foreign key (codigo_hospital)     references hospital(codigo),
+    constraint fk_hai_area_interna  foreign key (codigo_area_interna) references area_interna(codigo)
+);
+
+create table rol_usuario_cat (
+    id     serial      primary key,
+    nombre varchar(50) not null unique
+);
+
+create table usuario (
+    codigo     varchar(50)  primary key,
+    correo     varchar(50)  not null unique,
+    contrasena varchar(255) not null,
+    id_rol     int          not null,
+    telefono   varchar(20)  not null,
+    estado     boolean      not null default false,
+    constraint fk_usuario_rol foreign key (id_rol) references rol_usuario(id)
+);
+
+create table medico (
+    documento       varchar(50) primary key,
+    nombre          varchar(50) not null,
+    apellido        varchar(50) not null,
+    id_especialidad int         not null,
+    telefono        varchar(20) not null,
+    correo          varchar(50) not null,
+    estado          boolean     not null default true,
+    codigo_usuario  varchar(50) not null,
+    codigo_ciudad   varchar(50) not null,
+    constraint fk_medico_especialidad foreign key (id_especialidad) references especialidad(id),
+    constraint fk_medico_usuario      foreign key (codigo_usuario)  references usuario(codigo),
+    constraint fk_medico_ciudad       foreign key (codigo_ciudad)   references ciudad(codigo)
+);
+
+create table paciente (
+    documento          varchar(20)  primary key,
+    nombre             varchar(50)  not null,
+    correo             varchar(50),
+    apellido           varchar(50)  not null,
+    telefono           varchar(50)  not null,
+    fecha_nacimiento   date         not null,
+    codigo_eps         varchar(50)  not null,
+    codigo_ciudad      varchar(50)  not null,
+    codigo_usuario     varchar(50),
+    constraint fk_paciente_eps     foreign key (codigo_eps)    references eps(codigo),
+    constraint fk_paciente_ciudad  foreign key (codigo_ciudad) references ciudad(codigo),
+    constraint fk_paciente_usuario foreign key (codigo_usuario) references usuario(codigo)
+);
+
+create table historial_clinico (
+    codigo             varchar(50) primary key,
+    fecha              date        not null,
+    tipo               varchar(50) not null,
+    descripcion        varchar(200) not null,
+    documento_paciente varchar(20) not null,
+    documento_medico   varchar(50) not null,
+    constraint fk_historial_paciente foreign key (documento_paciente) references paciente(documento),
+    constraint fk_historial_medico   foreign key (documento_medico)   references medico(documento)
+);
+
+create table servicio (
+    codigo           varchar(50)   primary key,
+    nombre           varchar(50)   not null,
+    procedimiento    varchar(250),
+    resultados       varchar(250),
+    costo            numeric(12,2) not null,
+    codigo_historial varchar(50)   not null,
+    constraint fk_servicio_historial foreign key (codigo_historial) references historial_clinico(codigo)
+);
+
+create table cita (
+    codigo             varchar(50)   primary key,
+    estado             boolean       not null default true,
+    fecha              timestamp     not null,
+    costo              numeric(12,2) not null,
+    id_tipo            int           not null,
+    documento_paciente varchar(20)   not null,
+    documento_medico   varchar(50)   not null,
+    codigo_hospital    varchar(50)   not null,
+    constraint fk_cita_tipo     foreign key (id_tipo)            references tipo_cita(id),
+    constraint fk_cita_paciente foreign key (documento_paciente) references paciente(documento),
+    constraint fk_cita_medico   foreign key (documento_medico)   references medico(documento),
+    constraint fk_cita_hospital foreign key (codigo_hospital)    references hospital(codigo)
+);
+
+create table notificacion_cita (
+    codigo         varchar(50)  primary key,
+    estado         boolean      not null default true,
+    descripcion    varchar(50)  not null,
+    correo_destino varchar(100) not null,
+    codigo_cita    varchar(50)  not null,
+    constraint fk_notificacion_cita foreign key (codigo_cita) references cita(codigo)
+);
+
+create table asignacion_medico (
+    codigo           varchar(50) primary key,
+    fecha            date        not null,
+    estado           boolean     not null default true,
+    documento_medico varchar(50) not null,
+    codigo_hai       varchar(50) not null,
+    constraint fk_asignacion_medico foreign key (documento_medico) references medico(documento),
+    constraint fk_asignacion_hai    foreign key (codigo_hai)       references hospital_area_interna(codigo)
+);
+
+create table horario_medico (
+    codigo            varchar(50) primary key,
+    dia_semana        varchar(15) not null,
+    hora_inicio       time        not null,
+    hora_fin          time        not null,
+    estado            boolean     not null default true,
+    codigo_asignacion varchar(50) not null,
+    constraint fk_horario_asignacion foreign key (codigo_asignacion) references asignacion_medico(codigo),
+    constraint chk_horario check (hora_fin > hora_inicio)
+);
+
+create table factura (
+    codigo          varchar(50)   primary key,
+    fecha           date          not null,
+    estado          boolean       not null default true,
+    costo_total     numeric(12,2) not null,
+    descripcion     varchar(250)  not null,
+    codigo_cita     varchar(50)   not null,
+    codigo_eps      varchar(50)   not null,
+    codigo_hospital varchar(50)   not null,
+    constraint fk_factura_cita     foreign key (codigo_cita)     references cita(codigo),
+    constraint fk_factura_eps      foreign key (codigo_eps)      references eps(codigo),
+    constraint fk_factura_hospital foreign key (codigo_hospital) references hospital(codigo)
+);
+
+
+insert into tipo_documento (nombre) values ('cedula de ciudadania'), ('tarjeta de identidad');
+insert into especialidad (nombre) values ('medicina general'), ('cardiologia');
+insert into tipo_cita (nombre) values ('primera vez'), ('control');
+insert into rol_usuario (nombre) values ('administrador'), ('medico');
+insert into departamento (nombre) values ('caldas'), ('antioquia');
+
+insert into ciudad (codigo, nombre, id_departamento, estado) values
+    ('CIU001', 'manizales', 1, true),
+    ('CIU002', 'medellin',  2, true);
+
+insert into eps (codigo, nombre) values
+    ('EPS001', 'sura'),
+    ('EPS002', 'sanitas');
+
+insert into hospital (codigo, nombre, direccion, telefono, estado, codigo_ciudad) values
+    ('HOS001', 'hospital santa sofia',  'cra 23#45-10', '8761234', true, 'CIU001'),
+    ('HOS002', 'clinica las americas', 'cll 50#2-80',  '3042222', true, 'CIU002');
+
+insert into area_interna (codigo, nombre) values
+    ('AI001', 'urgencias'),
+    ('AI002', 'pediatria');
+
+insert into hospital_area_interna (codigo, nombre, descripcion, codigo_hospital, codigo_area_interna) values
+    ('HAI001', 'urgencias santa sofia',  'atencion de urgencias 24h', 'HOS001', 'AI001'),
+    ('HAI002', 'pediatria las americas', 'atencion pediatrica',       'HOS002', 'AI002');
+
+insert into usuario (codigo, correo, contrasena, id_rol, telefono, estado) values
+    ('USR001', 'admin@hospital.com',  'hash_contrasena_1', 1, '3001234567', true),
+    ('USR002', 'medico@hospital.com', 'hash_contrasena_2', 2, '3019876543', true);
+
+insert into medico (documento, nombre, apellido, id_especialidad, telefono, correo, estado, codigo_usuario, codigo_ciudad) values
+    ('MED001', 'carlos',  'ramirez', 1, '3011111111', 'carlos.ramirez@hospital.com',  true, 'USR002', 'CIU001'),
+    ('MED002', 'patricia','lopez',   2, '3022222222', 'patricia.lopez@hospital.com',   true, 'USR001', 'CIU002');
+
+insert into paciente (documento, nombre, correo, apellido, telefono, fecha_nacimiento, codigo_eps, codigo_ciudad) values
+    ('PAC001', 'juan',  'juan@correo.com',  'garcia',  '3033333333', '1990-05-12', 'EPS001', 'CIU001'),
+    ('PAC002', 'maria', 'maria@correo.com', 'herrera', '3044444444', '1985-08-23', 'EPS002', 'CIU002');
+
+insert into historial_clinico (codigo, fecha, tipo, descripcion, documento_paciente, documento_medico) values
+    ('HC001', '2024-01-15', 'consulta general',  'paciente con fiebre y malestar general', 'PAC001', 'MED001'),
+    ('HC002', '2024-03-10', 'control cardiaco',  'revision rutinaria de presion arterial',  'PAC002', 'MED002');
+
+insert into servicio (codigo, nombre, procedimiento, resultados, costo, codigo_historial) values
+    ('SRV001', 'electrocardiograma', 'toma de ecg en reposo',  'ritmo sinusal normal',   85000.00, 'HC001'),
+    ('SRV002', 'hemograma completo', 'extraccion de muestra',  'valores dentro del rango normal', 45000.00, 'HC002');
+
+insert into cita (codigo, estado, fecha, costo, id_tipo, documento_paciente, documento_medico, codigo_hospital) values
+    ('CIT001', true, '2024-06-01 08:00:00', 50000.00, 1, 'PAC001', 'MED001', 'HOS001'),
+    ('CIT002', true, '2024-06-02 10:30:00', 70000.00, 2, 'PAC002', 'MED002', 'HOS002');
+
+insert into notificacion_cita (codigo, estado, descripcion, correo_destino, codigo_cita) values
+    ('NOT001', true, 'recordatorio de cita medica',    'juan@correo.com',  'CIT001'),
+    ('NOT002', true, 'confirmacion de cita asignada',  'maria@correo.com', 'CIT002');
+
+insert into asignacion_medico (codigo, fecha, estado, documento_medico, codigo_hai) values
+    ('ASG001', '2024-01-01', true, 'MED001', 'HAI001'),
+    ('ASG002', '2024-01-01', true, 'MED002', 'HAI002');
+
+insert into horario_medico (codigo, dia_semana, hora_inicio, hora_fin, estado, codigo_asignacion) values
+    ('HOR001', 'lunes',    '07:00', '13:00', true, 'ASG001'),
+    ('HOR002', 'miercoles','14:00', '20:00', true, 'ASG002');
+
+insert into factura (codigo, fecha, estado, costo_total, descripcion, codigo_cita, codigo_eps, codigo_hospital) values
+    ('FAC001', '2024-06-01', true, 50000.00, 'factura consulta medicina general', 'CIT001', 'EPS001', 'HOS001'),
+    ('FAC002', '2024-06-02', true, 70000.00, 'factura control cardiologico',      'CIT002', 'EPS002', 'HOS002');
