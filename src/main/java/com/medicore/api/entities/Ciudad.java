@@ -8,6 +8,8 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Ciudad {
 
     @Id
@@ -17,10 +19,11 @@ public class Ciudad {
     @Column(name = "nombre", nullable = false, length = 50)
     private String nombre;
 
-    //Esto lo tienen que modificar los que hagan la seccion de departamento
-    @Column(name = "id_departamento", nullable = false)
-    private Integer idDepartamento;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_departamento", nullable = false)
+    private Departamento departamento;
 
     @Column(name = "estado", nullable = false)
-    private Boolean estado;
+    @Builder.Default
+    private Boolean estado = true;
 }
