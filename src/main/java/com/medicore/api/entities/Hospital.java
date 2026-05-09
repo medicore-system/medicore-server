@@ -2,6 +2,8 @@ package com.medicore.api.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "hospital")
@@ -32,4 +34,8 @@ public class Hospital {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "codigo_ciudad", nullable = false)
     private Ciudad ciudad;
+
+    @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<HospitalAreaInterna> areasInternas = new ArrayList<>();
 }

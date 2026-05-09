@@ -1,5 +1,6 @@
 package com.medicore.api.controllers;
 
+import com.medicore.api.dtos.HospitalDetailResponse;
 import com.medicore.api.dtos.HospitalRequest;
 import com.medicore.api.dtos.HospitalResponse;
 import com.medicore.api.dtos.HospitalUpdateRequest;
@@ -38,6 +39,13 @@ public class HospitalController {
     public ResponseEntity<List<HospitalResponse>> getAllHospitals() {
         List<HospitalResponse> hospitals = hospitalService.getAllHospitals();
         return ResponseEntity.ok(hospitals);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<HospitalDetailResponse> getHospitalByCodigo(
+            @PathVariable("id") String codigo) {
+        HospitalDetailResponse response = hospitalService.getHospitalByCodigo(codigo);
+        return ResponseEntity.ok(response);
     }
 
 }
