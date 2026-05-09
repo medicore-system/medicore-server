@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/hospitals")
 @RequiredArgsConstructor
@@ -30,6 +32,12 @@ public class HospitalController {
             @PathVariable String id){
         HospitalResponse response = hospitalService.updateHospital(request, id);
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<HospitalResponse>> getAllHospitals() {
+        List<HospitalResponse> hospitals = hospitalService.getAllHospitals();
+        return ResponseEntity.ok(hospitals);
     }
 
 }
