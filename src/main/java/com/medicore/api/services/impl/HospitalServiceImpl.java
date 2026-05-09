@@ -2,6 +2,7 @@ package com.medicore.api.services.impl;
 
 import com.medicore.api.dtos.HospitalRequest;
 import com.medicore.api.dtos.HospitalResponse;
+import com.medicore.api.dtos.HospitalUpdateRequest;
 import com.medicore.api.entities.Ciudad;
 import com.medicore.api.entities.Hospital;
 import com.medicore.api.repositories.CiudadRepository;
@@ -22,10 +23,7 @@ public class HospitalServiceImpl implements IHospitalService {
     @Override
     @Transactional
     public HospitalResponse createHospital(HospitalRequest request) {
-        Ciudad ciudad = ciudadRepository.findById(request.getCodigoCiudad())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Ciudad no encontrada con código: " + request.getCodigoCiudad()));
-
+        Ciudad ciudad = validarCiudad(request.getCodigoCiudad());
         Hospital hospital = Hospital.builder()
                 .codigo(request.getCodigo())
                 .nombre(request.getNombre())
@@ -48,5 +46,31 @@ public class HospitalServiceImpl implements IHospitalService {
                 .estado(hospital.getEstado())
                 .codigoCiudad(hospital.getCiudad().getCodigo())
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public HospitalResponse updateHospital(HospitalUpdateRequest request, String id) {
+        Hospital hospital = hospitalRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Hospital no encontrado con código: " + id));
+        Ciudad ciudad = validarCiudad(request.getCodigoCiudad());
+        Hospital hospitalBuilder = Hospital.builder()
+                .codigo(id)
+                .nombre(request.getNombre())
+                .direccion(request.getDireccion())
+                .telefono(request.getTelefono())
+                .estado(request.getEstado())
+                .ciudad(ciudad)
+                .build();
+
+        Hospital saved = hospitalRepository.save(hospitalBuilder);
+        return toResponse(saved);
+    }
+
+    private Ciudad validarCiudad(String codigoCiudad){
+        return ciudadRepository.findById(codigoCiudad)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Ciudad no encontrada con código: " + codigoCiudad));
     }
 }
