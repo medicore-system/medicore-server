@@ -9,11 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class HospitalRequest {
-
-    @NotBlank(message = "El código del hospital es obligatorio")
-    @Size(max = 50, message = "El código no debe superar los 50 caracteres")
-    private String codigo;
+public class HospitalUpdateRequest {
 
     @NotBlank(message = "El nombre del hospital es obligatorio")
     @Size(max = 50, message = "El nombre no debe superar los 50 caracteres")
