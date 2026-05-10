@@ -13,11 +13,6 @@ create table tipo_cita (
     nombre varchar(50) not null unique
 );
 
-create table rol_usuario (
-    id     serial      primary key,
-    nombre varchar(50) not null unique
-);
-
 create table departamento (
     id     serial       primary key,
     nombre varchar(100) not null unique
@@ -52,28 +47,30 @@ create table area_interna (
 );
 
 create table hospital_area_interna (
-    codigo               varchar(50)  primary key,
-    nombre               varchar(100),
-    descripcion          varchar(250),
-    codigo_hospital      varchar(50)  not null,
-    codigo_area_interna  varchar(50)  not null,
-    constraint fk_hai_hospital      foreign key (codigo_hospital)     references hospital(codigo),
-    constraint fk_hai_area_interna  foreign key (codigo_area_interna) references area_interna(codigo)
-);
-
-create table rol_usuario_cat (
-    id     serial      primary key,
-    nombre varchar(50) not null unique
+    codigo              varchar(50)  primary key,
+    nombre              varchar(100),
+    descripcion         varchar(250),
+    codigo_hospital     varchar(50)  not null,
+    codigo_area_interna varchar(50)  not null,
+    constraint fk_hai_hospital     foreign key (codigo_hospital)     references hospital(codigo),
+    constraint fk_hai_area_interna foreign key (codigo_area_interna) references area_interna(codigo)
 );
 
 create table usuario (
-    codigo     varchar(50)  primary key,
-    correo     varchar(50)  not null unique,
-    contrasena varchar(255) not null,
-    id_rol     int          not null,
-    telefono   varchar(20)  not null,
-    estado     boolean      not null default false,
-    constraint fk_usuario_rol foreign key (id_rol) references rol_usuario(id)
+    documento        varchar(50)  primary key,
+    nombre           varchar(50)  not null,
+    apellido         varchar(50)  not null,
+    correo           varchar(50)  not null,
+    telefono         varchar(50)  not null,
+    fecha_nacimiento date         ,
+    contrasena       varchar(50)  ,
+    estado           boolean      not null default true,
+    rol              varchar(20)  not null default 'PACIENTE',
+    codigo_eps       varchar(50)  not null,
+    codigo_ciudad    varchar(50)  not null,
+    constraint fk_usuario_eps    foreign key (codigo_eps)   references eps(codigo),
+    constraint fk_usuario_ciudad foreign key (codigo_ciudad) references ciudad(codigo),
+    constraint chk_usuario_rol   check (rol in ('PACIENTE', 'ADMIN'))
 );
 
 create table medico (
@@ -84,36 +81,19 @@ create table medico (
     telefono        varchar(20) not null,
     correo          varchar(50) not null,
     estado          boolean     not null default true,
-    codigo_usuario  varchar(50) not null,
     codigo_ciudad   varchar(50) not null,
     constraint fk_medico_especialidad foreign key (id_especialidad) references especialidad(id),
-    constraint fk_medico_usuario      foreign key (codigo_usuario)  references usuario(codigo),
     constraint fk_medico_ciudad       foreign key (codigo_ciudad)   references ciudad(codigo)
 );
 
-create table paciente (
-    documento          varchar(20)  primary key,
-    nombre             varchar(50)  not null,
-    correo             varchar(50),
-    apellido           varchar(50)  not null,
-    telefono           varchar(50)  not null,
-    fecha_nacimiento   date         not null,
-    codigo_eps         varchar(50)  not null,
-    codigo_ciudad      varchar(50)  not null,
-    codigo_usuario     varchar(50),
-    constraint fk_paciente_eps     foreign key (codigo_eps)    references eps(codigo),
-    constraint fk_paciente_ciudad  foreign key (codigo_ciudad) references ciudad(codigo),
-    constraint fk_paciente_usuario foreign key (codigo_usuario) references usuario(codigo)
-);
-
 create table historial_clinico (
-    codigo             varchar(50) primary key,
-    fecha              date        not null,
-    tipo               varchar(50) not null,
+    codigo             varchar(50)  primary key,
+    fecha              date         not null,
+    tipo               varchar(50)  not null,
     descripcion        varchar(200) not null,
-    documento_paciente varchar(20) not null,
-    documento_medico   varchar(50) not null,
-    constraint fk_historial_paciente foreign key (documento_paciente) references paciente(documento),
+    documento_paciente varchar(50)  not null,
+    documento_medico   varchar(50)  not null,
+    constraint fk_historial_paciente foreign key (documento_paciente) references usuario(documento),
     constraint fk_historial_medico   foreign key (documento_medico)   references medico(documento)
 );
 
@@ -129,17 +109,19 @@ create table servicio (
 
 create table cita (
     codigo             varchar(50)   primary key,
-    estado             boolean       not null default true,
+    estado             varchar(20)   not null default 'PENDIENTE',
     fecha              timestamp     not null,
-    costo              numeric(12,2) not null,
+    hora               varchar(20)   not null,
+    costo              numeric(12,2) default 10000.00,
     id_tipo            int           not null,
-    documento_paciente varchar(20)   not null,
+    documento_paciente varchar(50)   not null,
     documento_medico   varchar(50)   not null,
     codigo_hospital    varchar(50)   not null,
     constraint fk_cita_tipo     foreign key (id_tipo)            references tipo_cita(id),
-    constraint fk_cita_paciente foreign key (documento_paciente) references paciente(documento),
+    constraint fk_cita_paciente foreign key (documento_paciente) references usuario(documento),
     constraint fk_cita_medico   foreign key (documento_medico)   references medico(documento),
-    constraint fk_cita_hospital foreign key (codigo_hospital)    references hospital(codigo)
+    constraint fk_cita_hospital foreign key (codigo_hospital)    references hospital(codigo),
+    constraint chk_cita_estado  check (estado in ('APROBADA', 'PENDIENTE', 'DENEGADA'))
 );
 
 create table notificacion_cita (
@@ -169,7 +151,7 @@ create table horario_medico (
     estado            boolean     not null default true,
     codigo_asignacion varchar(50) not null,
     constraint fk_horario_asignacion foreign key (codigo_asignacion) references asignacion_medico(codigo),
-    constraint chk_horario check (hora_fin > hora_inicio)
+    constraint chk_horario           check (hora_fin > hora_inicio)
 );
 
 create table factura (

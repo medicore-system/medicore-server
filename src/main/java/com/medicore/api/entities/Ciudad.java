@@ -3,6 +3,8 @@ package com.medicore.api.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "ciudad")
 @Getter
@@ -26,4 +28,7 @@ public class Ciudad {
     @Column(name = "estado", nullable = false)
     @Builder.Default
     private Boolean estado = true;
+
+    @OneToMany(mappedBy = "ciudad")
+    private List<Usuario> pacientes;
 }
