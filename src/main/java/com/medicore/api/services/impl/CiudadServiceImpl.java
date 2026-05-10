@@ -9,7 +9,7 @@ import com.medicore.api.exceptions.RecursoNoEncontradoException;
 import com.medicore.api.mappers.CiudadMapper;
 import com.medicore.api.repositories.CiudadRepository;
 import com.medicore.api.repositories.DepartamentoRepository;
-import com.medicore.api.repositories.HospitalRepository;
+import com.medicore.api.repositories.hospital.HospitalRepository;
 import com.medicore.api.services.ICiudadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
