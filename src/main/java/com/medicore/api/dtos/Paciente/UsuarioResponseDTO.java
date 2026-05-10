@@ -5,12 +5,13 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class PacienteResponseDTO {
+public class UsuarioResponseDTO {
     private String documento;
     private String nombre;
     private String apellido;
     private String eps;
     private String ciudad;
     private String telefono;
+    private boolean estado;
 
 }
