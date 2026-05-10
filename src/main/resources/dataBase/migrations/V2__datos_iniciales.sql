@@ -39,9 +39,9 @@ insert into servicio (codigo, nombre, procedimiento, resultados, costo, codigo_h
     ('SRV001', 'electrocardiograma', 'toma de ecg en reposo', 'ritmo sinusal normal',          85000.00, 'HC001'),
     ('SRV002', 'hemograma completo', 'extraccion de muestra', 'valores dentro del rango normal', 45000.00, 'HC002');
 
-insert into cita (codigo, estado, fecha, costo, id_tipo, documento_paciente, documento_medico, codigo_hospital) values
-    ('CIT001', 'PENDIENTE', '2024-06-01 08:00:00', 50000.00, 1, 'PAC001', 'MED001', 'HOS001'),
-    ('CIT002', 'PENDIENTE', '2024-06-02 10:30:00', 70000.00, 2, 'PAC002', 'MED002', 'HOS002');
+insert into cita (codigo, estado, fecha, hora, costo, id_tipo, documento_paciente, documento_medico, codigo_hospital) values
+    ('CIT001', 'PENDIENTE', '2024-06-01 08:00:00', '04:00', 50000.00, 1, 'PAC001', 'MED001', 'HOS001'),
+    ('CIT002', 'PENDIENTE', '2024-06-02 10:30:00', '02:30', 70000.00, 2, 'PAC002', 'MED002', 'HOS002');
 
 insert into notificacion_cita (codigo, estado, descripcion, correo_destino, codigo_cita) values
     ('NOT001', true, 'recordatorio de cita medica',   'juan@correo.com',  'CIT001'),

@@ -30,11 +30,11 @@ public class Usuario {
     @Column(name = "telefono", nullable = false, length = 50)
     private String telefono;
 
-    @Column(name = "fecha_nacimiento",  nullable = false, insertable = false, updatable = false)
+    @Column(name = "fecha_nacimiento", insertable = false, updatable = false)
     private LocalDate fechaNacimiento;
 
-    @Column(name = "contraseña",  nullable = false, length = 50)
-    private String contraseña;
+    @Column(name = "contrasena", length = 50)
+    private String contrasena;
 
     @ManyToOne
     @JoinColumn(name = "codigo_eps", nullable = false)
@@ -44,9 +44,9 @@ public class Usuario {
     @JoinColumn(name = "codigo_ciudad", nullable = false)
     private Ciudad ciudad;
 
-    @Column(name = "estado",  nullable = false)
-    private Boolean estado;
+    @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private Boolean estado = true;
 
     @Column(name = "rol",  nullable = false)
-    private String rol;
+    private String rol = "PACIENTE";
 }
