@@ -119,7 +119,7 @@ public class CiudadServiceImpl implements ICiudadService {
 
     private String generarCodigo() {
         int siguiente = ciudadRepository.findMaxCodigoSequence() + 1;
-        return String.format("COL-%03d", siguiente);
+        return String.format("CIU-%03d", siguiente);
     }
 
     private CiudadResponse toResponse(Ciudad ciudad) {
