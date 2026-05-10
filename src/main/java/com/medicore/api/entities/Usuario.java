@@ -33,7 +33,7 @@ public class Usuario {
     @Column(name = "fecha_nacimiento",  nullable = false, insertable = false, updatable = false)
     private LocalDate fechaNacimiento;
 
-    @Column(name = "contraseña",  nullable = false, length = 50)
+    @Column(name = "contrasena",  nullable = false, length = 50)
     private String contraseña;
 
     @ManyToOne
