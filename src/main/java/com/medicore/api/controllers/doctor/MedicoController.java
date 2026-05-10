@@ -1,23 +1,29 @@
 package com.medicore.api.controllers.doctor;
 
+import com.medicore.api.dtos.doctor.MedicoRequestDTO;
 import com.medicore.api.dtos.doctor.MedicoResponseDTO;
+import com.medicore.api.entities.Ciudad;
+import com.medicore.api.entities.Especialidad;
 import com.medicore.api.entities.Medico;
+import com.medicore.api.repositories.CiudadRepository;
+import com.medicore.api.repositories.EspecialidadRepository;
+import com.medicore.api.services.ICiudadService;
+import com.medicore.api.services.IEspecialidadService;
 import com.medicore.api.services.IMedicoService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/doctors")
+@RequestMapping("/medicos")
 @RequiredArgsConstructor
 public class MedicoController   {
     private final IMedicoService medicoService;
+    private final IEspecialidadService especialidadService;
+    private final ICiudadService ciudadService;
 
     @GetMapping
     public ResponseEntity<List<MedicoResponseDTO>> findAll() {
@@ -37,18 +43,86 @@ public class MedicoController   {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PostMapping
+    public ResponseEntity<MedicoResponseDTO> save(@RequestBody MedicoRequestDTO request) {
+
+        Medico medico = new Medico();
+        medico.setDocumento(request.getDocumento());
+        medico.setNombre(request.getNombre());
+        medico.setApellido(request.getApellido());
+        medico.setEmail(request.getEmail());
+        medico.setTelefono(request.getTelefono());
+        medico.setEstado(true);
+
+        Especialidad especialidad = especialidadService
+                .findById(request.getIdEspecialidad())
+                .orElseThrow(() -> new RuntimeException("Especialidad no encontrada"));
+
+        medico.setEspecialidad(especialidad);
+
+        Ciudad ciudad = ciudadService
+                .findById(request.getCodigoCiudad())
+                .orElseThrow(() -> new RuntimeException("Ciudad no encontrada"));
+
+        medico.setCiudad(ciudad);
+
+        return ResponseEntity.ok(
+                toResponse(medicoService.save(medico))
+        );
+    }
+
+        @PutMapping("/{documento}")
+        public ResponseEntity<MedicoResponseDTO> update(@PathVariable String documento,
+                                                        @RequestBody MedicoRequestDTO request) {
+
+            Medico medico = new Medico();
+
+            medico.setDocumento(request.getDocumento());
+            medico.setNombre(request.getNombre());
+            medico.setApellido(request.getApellido());
+            medico.setTelefono(request.getTelefono());
+            medico.setEmail(request.getEmail());
+            medico.setEstado(request.getEstado());
+            // Especialidad
+            Especialidad especialidad = new Especialidad();
+            especialidad.setId(request.getIdEspecialidad());
+
+            medico.setEspecialidad(especialidad);
+
+            // Ciudad
+            Ciudad ciudad = new Ciudad();
+            ciudad.setCodigo(request.getCodigoCiudad());
+
+            medico.setCiudad(ciudad);
+            return medicoService.update(documento, medico)
+                    .map(this::toResponse)
+                    .map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        }
+
+    @DeleteMapping("/{documento}")
+    public ResponseEntity<Void> delete(@PathVariable String documento) {
+        return medicoService.delete(documento)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
+    }
 
     private MedicoResponseDTO toResponse(Medico medico) {
         MedicoResponseDTO response = new MedicoResponseDTO();
 
-        response.setDocument(medico.getDocumento());
-        response.setName(medico.getNombre());
-        response.setLastName(medico.getApellido());
-        response.setPhone(medico.getTelefono());
-        response.setEmail(medico.getCorreo());
+        response.setDocumento(medico.getDocumento());
+        response.setNombre(medico.getNombre());
+        response.setApellido(medico.getApellido());
+        response.setTelefono(medico.getTelefono());
+        response.setEmail(medico.getEmail());
 
-        response.setSpecialty(medico.getEspecialidad().getNombre());
+        response.setIdEspecialidad(medico.getEspecialidad().getId());
         response.setStatus(medico.getEstado() ? "ACTIVE" : "INACTIVE");
+
+
+        response.setCodigoCiudad(
+                medico.getCiudad() != null ? medico.getCiudad().getCodigo() : null
+        );
 
         return response;
     }

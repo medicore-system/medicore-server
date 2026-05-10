@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table (name = "doctor")
+@Table (name = "medico")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,7 +27,7 @@ public class Medico {
     private String telefono;
 
     @Column(name = "correo")
-    private String correo;
+    private String email;
 
     @Column(name = "estado", columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean estado;
@@ -36,9 +36,6 @@ public class Medico {
     @JoinColumn(name = "id_especialidad")
     private Especialidad especialidad;
 
-    @OneToOne
-    @JoinColumn(name = "codigo_usuario")
-    private Usuario usuario;
 
     @OneToOne
     @JoinColumn(name = "codigo_ciudad")

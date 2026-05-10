@@ -4,18 +4,20 @@ import com.medicore.api.dtos.CiudadRequest;
 import com.medicore.api.dtos.CiudadResponse;
 import com.medicore.api.entities.Ciudad;
 import com.medicore.api.entities.Departamento;
+import com.medicore.api.entities.Medico;
 import com.medicore.api.exceptions.CiudadDuplicadaException;
 import com.medicore.api.exceptions.RecursoNoEncontradoException;
 import com.medicore.api.mappers.CiudadMapper;
 import com.medicore.api.repositories.CiudadRepository;
 import com.medicore.api.repositories.DepartamentoRepository;
-import com.medicore.api.repositories.HospitalRepository;
+import com.medicore.api.repositories.hospital.HospitalRepository;
 import com.medicore.api.services.ICiudadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +34,11 @@ public class CiudadServiceImpl implements ICiudadService {
         return ciudadRepository.findByEstadoTrue().stream()
                 .map(this::toResponse)
                 .toList();
+    }
+
+    @Override
+    public Optional<Ciudad> findById(String codigo) {
+        return ciudadRepository.findById(codigo);
     }
 
     @Override

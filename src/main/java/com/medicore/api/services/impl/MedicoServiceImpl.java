@@ -32,17 +32,13 @@ public class MedicoServiceImpl implements IMedicoService {
 
     @Override
     public Optional<Medico> update(String documento, Medico medico) {
-        //exiting es el objeto que ya existe en la base de datos y vas a actualizar
+
         return medicoRepository.findById(documento).map(existing -> {
 
             existing.setNombre(medico.getNombre());
             existing.setApellido(medico.getApellido());
             existing.setTelefono(medico.getTelefono());
-            existing.setCorreo(medico.getCorreo());
-
-            existing.setEspecialidad(medico.getEspecialidad());
-            existing.setCiudad(medico.getCiudad());
-            existing.setUsuario(medico.getUsuario());
+            existing.setEmail(medico.getEmail());
 
             return medicoRepository.save(existing);
         });
@@ -50,8 +46,19 @@ public class MedicoServiceImpl implements IMedicoService {
 
     @Override
     public boolean delete(String documento) {
-        if (!medicoRepository.existsById(documento)) return false;
-        medicoRepository.deleteById(documento);
-        return true;
+        Optional<Medico> medicoOptional = medicoRepository.findById(documento);
+
+        if (medicoOptional.isPresent()) {
+
+            Medico medico = medicoOptional.get();
+
+            medico.setEstado(false);
+
+            medicoRepository.save(medico);
+
+            return true;
+        }
+
+        return false;
     }
 }

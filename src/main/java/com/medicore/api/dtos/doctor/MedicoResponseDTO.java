@@ -8,12 +8,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MedicoResponseDTO {
-    private String document;
-    private String name;
-    private String lastName;
-    private String specialty;
-    private String phone;
+    private String documento;
+    private String nombre;
+    private String apellido;
+    private Integer idEspecialidad;
+    private String telefono;
     private String email;
     private String status;
+    private String codigoCiudad;
 
 }

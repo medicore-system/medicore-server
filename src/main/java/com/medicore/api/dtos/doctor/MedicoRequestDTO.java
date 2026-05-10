@@ -7,11 +7,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 //Request --> Lo que el frontend envia(la info que enviamos)
 public class MedicoRequestDTO {
-    private String document;
-    private String name;
-    private String lastName;
-    private String specialty;
-    private String phone;
+    private String documento;
+    private String nombre;
+    private String apellido;
+    private Integer idEspecialidad;
+    private String telefono;
     private String email;
+    private String codigoCiudad;
+    private Boolean estado;
 
 }
