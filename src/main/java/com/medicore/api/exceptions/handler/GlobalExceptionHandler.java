@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import com.medicore.api.exceptions.ServicioDuplicadoException;
 
 import java.util.List;
 
@@ -52,6 +53,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiErrorResponse.builder()
                 .status(HttpStatus.NOT_FOUND.value())
                 .error("Recurso no encontrado")
+                .mensaje(ex.getMessage())
+                .build());
+    }
+
+    @ExceptionHandler(ServicioDuplicadoException.class)
+    public ResponseEntity<ApiErrorResponse> handleServicioDuplicado(ServicioDuplicadoException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiErrorResponse.builder()
+                .status(HttpStatus.CONFLICT.value())
+                .error("Servicio duplicado")
                 .mensaje(ex.getMessage())
                 .build());
     }

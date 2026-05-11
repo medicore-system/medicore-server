@@ -2,26 +2,22 @@ package com.medicore.api.dtos.servicio;
 
 import lombok.*;
 
-import java.math.BigDecimal;
-import java.util.List;
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ServicioDetalleResponse {
+public class ServicioHistorialResponse {
 
     private String codigo;
-    private String nombre;
-    private String descripcion;
-    private Integer idTipoServicio;
+    private LocalDate fecha;
     private String tipo;
-    private BigDecimal precio;
-    private Boolean estado;
-    private String procedimiento;
-    private String resultados;
-    private String codigoHistorial;
+    private String descripcion;
 
-    private ServicioHistorialResponse historialClinico;
-    private List<ServicioFacturaResponse> facturas;
+    private String documentoPaciente;
+    private String nombrePaciente;
+
+    private String documentoMedico;
+    private String nombreMedico;
 }
