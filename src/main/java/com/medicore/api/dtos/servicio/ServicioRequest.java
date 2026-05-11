@@ -33,6 +33,8 @@ public class ServicioRequest {
     @Size(max = 250, message = "Los resultados no pueden superar los 250 caracteres")
     private String resultados;
 
-    @Size(max = 50, message = "El código de historial no puede superar los 50 caracteres")
+    @Size(max = 50, message = "El código de historial clínico no puede superar los 50 caracteres")
     private String codigoHistorial;
+
+    private Boolean estado;
 }
