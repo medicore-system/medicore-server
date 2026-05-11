@@ -92,8 +92,9 @@ public class Cita {
     /**
      * Documento del médico encargado de atender la cita.
      */
-    @Column(name = "documento_medico", nullable = false)
-    private String documentoMedico;
+    @ManyToOne
+    @JoinColumn(name = "documento_medico", nullable = false)
+    private Medico medico;
 
     /**
      * Hospital donde se realizará la cita médica.

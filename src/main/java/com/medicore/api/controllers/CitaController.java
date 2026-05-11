@@ -4,12 +4,14 @@ import com.medicore.api.dtos.Usuario.UsuarioResponseDTO;
 import com.medicore.api.dtos.cita.CitaCreateRequestDTO;
 import com.medicore.api.dtos.cita.CitaResponseDTO;
 import com.medicore.api.entities.Cita;
+import com.medicore.api.entities.Medico;
 import com.medicore.api.entities.TipoCita;
 import com.medicore.api.entities.Usuario;
 import com.medicore.api.entities.hospital.Hospital;
 import com.medicore.api.repositories.ICitaRepository;
 import com.medicore.api.repositories.ITipoCitaRepository;
 import com.medicore.api.repositories.IUsuarioRepository;
+import com.medicore.api.repositories.MedicoRepository;
 import com.medicore.api.repositories.hospital.HospitalRepository;
 import com.medicore.api.services.ICitaService;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +54,10 @@ public class CitaController {
      * Repositorio para la gestión de tipos de cita.
      */
     private final ITipoCitaRepository  tipoCitaRepository;
+    /**
+     * Repositorio para la gestión de medicos.
+     */
+    private final MedicoRepository medicoRepository;
 
     /**
      * Crea una nueva cita médica.
@@ -76,6 +82,8 @@ public class CitaController {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         TipoCita tc = tipoCitaRepository.findById(cita.getId_tipo())
                 .orElseThrow(() -> new RuntimeException("Tipo cita no encontrado"));
+        Medico m = medicoRepository.findById(cita.getDocumento_medico())
+                .orElseThrow(() -> new RuntimeException("Medico no encontrado"));
         Cita c = new Cita();
         int next = citaRepository.findMaxCodigoSquence() + 1;
         String codigo = String.format("CIT%03d", next);
@@ -85,7 +93,7 @@ public class CitaController {
         c.setCosto(cita.getCosto());
         c.setTipoCita(tc);
         c.setUsuario(u);
-        c.setDocumentoMedico(cita.getDocumento_medico());
+        c.setMedico(m);
         c.setHospital(h);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(toResponse(citaService.save(c)));
@@ -177,12 +185,14 @@ public class CitaController {
             responseDTO.setTipoCita(cita.getTipoCita().getNombre());
         }
         if(cita.getUsuario()!=null){
-            responseDTO.setNombreUsuario(cita.getUsuario().getNombre());
+            responseDTO.setNombreUsuario(cita.getUsuario().getNombre() + " " +  cita.getUsuario().getApellido());
         }
         if(cita.getHospital()!=null){
             responseDTO.setHospital(cita.getHospital().getNombre());
         }
-        responseDTO.setMedico(cita.getDocumentoMedico());
+        if(cita.getMedico()!=null){
+            responseDTO.setMedico(cita.getMedico().getNombre() + " " +  cita.getMedico().getApellido());
+        }
         return responseDTO;
     }
 

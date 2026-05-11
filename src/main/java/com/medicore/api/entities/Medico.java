@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.List;
+
 @Entity
 @Table (name = "medico")
 @Data
@@ -36,8 +38,10 @@ public class Medico {
     @JoinColumn(name = "id_especialidad")
     private Especialidad especialidad;
 
-
     @OneToOne
     @JoinColumn(name = "codigo_ciudad")
     private Ciudad ciudad;
+
+    @OneToMany(mappedBy = "medico")
+    private List<Cita> citas;
 }
