@@ -1,5 +1,6 @@
 package com.medicore.api.entities.hospital;
 
+import com.medicore.api.entities.Cita;
 import com.medicore.api.entities.Ciudad;
 import com.medicore.api.entities.areainterna.HospitalAreaInterna;
 import jakarta.persistence.*;
@@ -102,4 +103,16 @@ public class Hospital {
     @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY)
     @Builder.Default
     private List<HospitalAreaInterna> areasInternas = new ArrayList<>();
+
+    /**
+     * Lista de citas asociadas al hospital.
+     *
+     * <p>Representa la relación uno a muchos entre
+     * un hospital y sus citas médicas.</p>
+     *
+     * <p>Un hospital puede tener múltiples citas
+     * registradas.</p>
+     */
+    @OneToMany(mappedBy = "hospital")
+    private List<Cita> citas;
 }
