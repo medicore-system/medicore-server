@@ -62,11 +62,17 @@ public class Usuario {
     @Column(name = "fecha_nacimiento", insertable = false, updatable = false)
     private LocalDate fechaNacimiento;
 
+/* Se quitó lo siguiente:
+    @Column(name = "contrasena",  nullable = false, length = 50)
+    private String contraseña;
+
+    Y se cambió por:*/
     /**
      * Contraseña del usuario para autenticación.
      */
-    @Column(name = "contrasena", length = 50)
+    @Column(name = "contrasena", nullable = false, length = 50) // Se agregó el nullable = false.
     private String contrasena;
+
 
     /**
      * EPS asociada al usuario.
