@@ -119,12 +119,12 @@ public class CitaController {
      * @return la cita encontrada o 404 si no existe.
      */
     @GetMapping("/{documento_paciente}")
-    public ResponseEntity<CitaResponseDTO> findByDocumento(@PathVariable String documento_paciente){
-        return citaService.findByDocumento(documento_paciente)
+    public ResponseEntity<List<CitaResponseDTO>> findByDocumento(@PathVariable String documento_paciente){
+        List<CitaResponseDTO> response = citaService.findByDocumento(documento_paciente).stream()
                 .map(this::toResponse)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-
+                .toList();
+        System.out.println(response);
+        return ResponseEntity.ok(response);
     }
 
     /**

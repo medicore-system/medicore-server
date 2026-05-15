@@ -69,7 +69,7 @@ public class CitaServiceImpl implements ICitaService {
      * o vacío si no existe.
      */
     @Override
-    public Optional<Cita>findByDocumento(String documento_paciente) {
+    public List<Cita>findByDocumento(String documento_paciente) {
         return citaRepository.findByUsuarioDocumento(documento_paciente);
     }
 

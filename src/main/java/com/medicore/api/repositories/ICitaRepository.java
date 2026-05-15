@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 /**
  * Repositorio encargado de la persistencia y consulta
@@ -25,7 +26,7 @@ public interface ICitaRepository extends JpaRepository<Cita, String> {
      * @return un Optional con la cita encontrada,
      * o vacío si no existe.
      */
-    Optional<Cita> findByUsuarioDocumento(String documento_paciente);
+    List<Cita> findByUsuarioDocumento(String documento_paciente);
 
     /**
      * Obtiene el valor numérico máximo utilizado
