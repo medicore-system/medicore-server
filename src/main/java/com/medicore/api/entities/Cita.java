@@ -80,7 +80,7 @@ public class Cita {
      */
     @OneToOne
     @JoinColumn(name = "id_tipo", nullable = false)
-    private TipoCita tipoCita;
+    private Especialidad especialidad;
 
     /**
      * Usuario/paciente asociado a la cita.

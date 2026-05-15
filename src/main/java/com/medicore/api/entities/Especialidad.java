@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.List;
+
 @Entity
 @Table(name = "especialidad")
 @Data
@@ -22,4 +24,7 @@ public class Especialidad {
 
     @OneToOne(mappedBy = "especialidad")
     private Medico medico;
+
+    @OneToMany(mappedBy = "especialidad")
+    private List<Cita> citas;
 }
