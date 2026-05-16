@@ -1,7 +1,7 @@
 package com.medicore.api.controllers;
 
-import com.medicore.api.dtos.CiudadRequest;
-import com.medicore.api.dtos.CiudadResponse;
+import com.medicore.api.dtos.ciudad.CiudadRequestDTO;
+import com.medicore.api.dtos.ciudad.CiudadResponseDTO;
 import com.medicore.api.services.ICiudadService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +19,10 @@ public class CiudadController {
     private final ICiudadService ciudadService;
 
     @GetMapping
-    public ResponseEntity<List<CiudadResponse>> listar(
+    public ResponseEntity<List<CiudadResponseDTO>> listar(
             @RequestParam(required = false) String buscar) {
 
-        List<CiudadResponse> ciudades = (buscar != null && !buscar.isBlank())
+        List<CiudadResponseDTO> ciudades = (buscar != null && !buscar.isBlank())
                 ? ciudadService.buscarCiudadesPorNombre(buscar)
                 : ciudadService.listarCiudades();
 
@@ -30,22 +30,22 @@ public class CiudadController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CiudadResponse> obtener(@PathVariable String id) {
+    public ResponseEntity<CiudadResponseDTO> obtener(@PathVariable String id) {
         return ResponseEntity.ok(ciudadService.obtenerCiudad(id));
     }
 
     @PostMapping
-    public ResponseEntity<CiudadResponse> crear(
-            @Valid @RequestBody CiudadRequest request) {
+    public ResponseEntity<CiudadResponseDTO> crear(
+            @Valid @RequestBody CiudadRequestDTO request) {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ciudadService.crearCiudad(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CiudadResponse> editar(
+    public ResponseEntity<CiudadResponseDTO> editar(
             @PathVariable String id,
-            @Valid @RequestBody CiudadRequest request) {
+            @Valid @RequestBody CiudadRequestDTO request) {
 
         return ResponseEntity.ok(ciudadService.editarCiudad(id, request));
     }

@@ -1,16 +1,13 @@
 package com.medicore.api.services.impl;
 
-import com.medicore.api.dtos.CiudadRequest;
-import com.medicore.api.dtos.CiudadResponse;
+import com.medicore.api.dtos.ciudad.CiudadRequestDTO;
+import com.medicore.api.dtos.ciudad.CiudadResponseDTO;
 import com.medicore.api.entities.Ciudad;
 import com.medicore.api.entities.Departamento;
-import com.medicore.api.entities.Medico;
 import com.medicore.api.exceptions.CiudadDuplicadaException;
 import com.medicore.api.exceptions.RecursoNoEncontradoException;
-import com.medicore.api.mappers.CiudadMapper;
-import com.medicore.api.repositories.CiudadRepository;
+import com.medicore.api.repositories.ICiudadRepository;
 import com.medicore.api.repositories.DepartamentoRepository;
-import com.medicore.api.repositories.hospital.HospitalRepository;
 import com.medicore.api.services.ICiudadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,35 +20,34 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CiudadServiceImpl implements ICiudadService {
 
-    private final CiudadRepository ciudadRepository;
+    private final ICiudadRepository ciudadRepository;
     private final DepartamentoRepository departamentoRepository;
-    private final HospitalRepository hospitalRepository;
-    private final CiudadMapper ciudadMapper;
 
     @Override
     @Transactional(readOnly = true)
-    public List<CiudadResponse> listarCiudades() {
-        return ciudadRepository.findByEstadoTrue().stream()
+    public List<CiudadResponseDTO> listarCiudades() {
+        return ciudadRepository.findAll().stream()
                 .map(this::toResponse)
                 .toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Ciudad> findById(String codigo) {
         return ciudadRepository.findById(codigo);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<CiudadResponse> buscarCiudadesPorNombre(String nombre) {
-        return ciudadRepository.findByNombreContainingIgnoreCaseAndEstadoTrue(nombre).stream()
+    public List<CiudadResponseDTO> buscarCiudadesPorNombre(String nombre) {
+        return ciudadRepository.findByNombreContainingIgnoreCase(nombre).stream()
                 .map(this::toResponse)
                 .toList();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public CiudadResponse obtenerCiudad(String codigo) {
+    public CiudadResponseDTO obtenerCiudad(String codigo) {
         Ciudad ciudad = ciudadRepository.findById(codigo)
                 .orElseThrow(() -> new RecursoNoEncontradoException(
                         "Ciudad no encontrada con código: " + codigo));
@@ -60,19 +56,19 @@ public class CiudadServiceImpl implements ICiudadService {
 
     @Override
     @Transactional
-    public CiudadResponse crearCiudad(CiudadRequest request) {
-        Departamento departamento = obtenerDepartamento(request.getIdDepartamento());
+    public CiudadResponseDTO crearCiudad(CiudadRequestDTO request) {
+        Departamento departamento = resolverDepartamento(request.getDepartment());
 
         if (ciudadRepository.existsByNombreIgnoreCaseAndDepartamentoId(
-                request.getNombre(), request.getIdDepartamento())) {
-            throw new CiudadDuplicadaException(request.getNombre(), departamento.getNombre());
+                request.getName(), departamento.getId())) {
+            throw new CiudadDuplicadaException(request.getName(), departamento.getNombre());
         }
 
         Ciudad ciudad = Ciudad.builder()
                 .codigo(generarCodigo())
-                .nombre(request.getNombre())
+                .nombre(request.getName())
                 .departamento(departamento)
-                .estado(true)
+                .estado("ACTIVE".equalsIgnoreCase(request.getStatus()))
                 .build();
 
         return toResponse(ciudadRepository.save(ciudad));
@@ -80,23 +76,24 @@ public class CiudadServiceImpl implements ICiudadService {
 
     @Override
     @Transactional
-    public CiudadResponse editarCiudad(String codigo, CiudadRequest request) {
+    public CiudadResponseDTO editarCiudad(String codigo, CiudadRequestDTO request) {
         Ciudad ciudad = ciudadRepository.findById(codigo)
                 .orElseThrow(() -> new RecursoNoEncontradoException(
                         "Ciudad no encontrada con código: " + codigo));
 
-        Departamento departamento = obtenerDepartamento(request.getIdDepartamento());
+        Departamento departamento = resolverDepartamento(request.getDepartment());
 
-        boolean cambiaDatosUnicos = !ciudad.getNombre().equalsIgnoreCase(request.getNombre())
-                || !ciudad.getDepartamento().getId().equals(request.getIdDepartamento());
+        boolean cambiaDatosUnicos = !ciudad.getNombre().equalsIgnoreCase(request.getName())
+                || !ciudad.getDepartamento().getId().equals(departamento.getId());
 
         if (cambiaDatosUnicos && ciudadRepository.existsByNombreIgnoreCaseAndDepartamentoIdAndCodigoNot(
-                request.getNombre(), request.getIdDepartamento(), codigo)) {
-            throw new CiudadDuplicadaException(request.getNombre(), departamento.getNombre());
+                request.getName(), departamento.getId(), codigo)) {
+            throw new CiudadDuplicadaException(request.getName(), departamento.getNombre());
         }
 
-        ciudad.setNombre(request.getNombre());
+        ciudad.setNombre(request.getName());
         ciudad.setDepartamento(departamento);
+        ciudad.setEstado("ACTIVE".equalsIgnoreCase(request.getStatus()));
 
         return toResponse(ciudadRepository.save(ciudad));
     }
@@ -111,10 +108,12 @@ public class CiudadServiceImpl implements ICiudadService {
         ciudadRepository.save(ciudad);
     }
 
-    private Departamento obtenerDepartamento(Integer idDepartamento) {
-        return departamentoRepository.findById(idDepartamento)
-                .orElseThrow(() -> new RecursoNoEncontradoException(
-                        "Departamento no encontrado con id: " + idDepartamento));
+    private Departamento resolverDepartamento(String nombreDepartamento) {
+        return departamentoRepository.findByNombreIgnoreCase(nombreDepartamento)
+                .orElseGet(() -> departamentoRepository.save(
+                        Departamento.builder()
+                                .nombre(nombreDepartamento)
+                                .build()));
     }
 
     private String generarCodigo() {
@@ -122,8 +121,12 @@ public class CiudadServiceImpl implements ICiudadService {
         return String.format("COL-%03d", siguiente);
     }
 
-    private CiudadResponse toResponse(Ciudad ciudad) {
-        Long totalHospitales = hospitalRepository.countByCiudadCodigo(ciudad.getCodigo());
-        return ciudadMapper.toResponse(ciudad, totalHospitales);
+    private CiudadResponseDTO toResponse(Ciudad ciudad) {
+        CiudadResponseDTO response = new CiudadResponseDTO();
+        response.setCode(ciudad.getCodigo());
+        response.setName(ciudad.getNombre());
+        response.setDepartment(ciudad.getDepartamento().getNombre());
+        response.setStatus(Boolean.TRUE.equals(ciudad.getEstado()) ? "ACTIVE" : "INACTIVE");
+        return response;
     }
 }

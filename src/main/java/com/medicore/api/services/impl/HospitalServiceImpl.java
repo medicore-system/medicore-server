@@ -5,7 +5,7 @@ import com.medicore.api.dtos.hospital.HospitalResponse;
 import com.medicore.api.dtos.hospital.HospitalUpdateRequest;
 import com.medicore.api.entities.Ciudad;
 import com.medicore.api.entities.hospital.Hospital;
-import com.medicore.api.repositories.CiudadRepository;
+import com.medicore.api.repositories.ICiudadRepository;
 import com.medicore.api.repositories.hospital.HospitalRepository;
 import com.medicore.api.services.IHospitalService;
 import jakarta.persistence.EntityNotFoundException;
@@ -45,7 +45,7 @@ public class HospitalServiceImpl implements IHospitalService {
     private final HospitalRepository hospitalRepository;
 
     /** Repositorio para operaciones de persistencia de ciudades. */
-    private final CiudadRepository ciudadRepository;
+    private final ICiudadRepository ciudadRepository;
 
     /**
      * Crea un nuevo hospital en el sistema.
