@@ -5,7 +5,6 @@ import com.medicore.api.dtos.doctor.MedicoResponseDTO;
 import com.medicore.api.entities.Ciudad;
 import com.medicore.api.entities.Especialidad;
 import com.medicore.api.entities.Medico;
-import com.medicore.api.repositories.CiudadRepository;
 import com.medicore.api.repositories.EspecialidadRepository;
 import com.medicore.api.services.ICiudadService;
 import com.medicore.api.services.IEspecialidadService;
