@@ -53,7 +53,7 @@ public interface ICitaService {
      * @return Optional con la cita encontrada
      * o vacío si no existe.
      */
-    Optional<Cita> findByDocumento(String documento_paciente);
+    List<Cita> findByDocumento(String documento_paciente);
 
     /**
      * Aprueba una cita médica.

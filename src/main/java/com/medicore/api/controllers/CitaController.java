@@ -1,19 +1,18 @@
 package com.medicore.api.controllers;
 
-import com.medicore.api.dtos.Usuario.UsuarioResponseDTO;
 import com.medicore.api.dtos.cita.CitaCreateRequestDTO;
 import com.medicore.api.dtos.cita.CitaResponseDTO;
 import com.medicore.api.entities.Cita;
+import com.medicore.api.entities.Especialidad;
 import com.medicore.api.entities.Medico;
-import com.medicore.api.entities.TipoCita;
 import com.medicore.api.entities.Usuario;
 import com.medicore.api.entities.hospital.Hospital;
 import com.medicore.api.repositories.ICitaRepository;
-import com.medicore.api.repositories.ITipoCitaRepository;
 import com.medicore.api.repositories.IUsuarioRepository;
 import com.medicore.api.repositories.MedicoRepository;
 import com.medicore.api.repositories.hospital.HospitalRepository;
 import com.medicore.api.services.ICitaService;
+import com.medicore.api.services.IEspecialidadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +52,7 @@ public class CitaController {
     /**
      * Repositorio para la gestión de tipos de cita.
      */
-    private final ITipoCitaRepository  tipoCitaRepository;
+    private final IEspecialidadService especialidadService;
     /**
      * Repositorio para la gestión de medicos.
      */
@@ -80,7 +79,7 @@ public class CitaController {
                 .orElseThrow(() -> new RuntimeException("Ciudad no encontrada"));
         Usuario u = usuarioRepository.findById(cita.getDocumento_paciente())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        TipoCita tc = tipoCitaRepository.findById(cita.getId_tipo())
+        Especialidad e = especialidadService.findById(cita.getId_tipo())
                 .orElseThrow(() -> new RuntimeException("Tipo cita no encontrado"));
         Medico m = medicoRepository.findById(cita.getDocumento_medico())
                 .orElseThrow(() -> new RuntimeException("Medico no encontrado"));
@@ -91,7 +90,7 @@ public class CitaController {
         c.setFecha(cita.getFecha());
         c.setHora(cita.getHora());
         c.setCosto(cita.getCosto());
-        c.setTipoCita(tc);
+        c.setEspecialidad(e);
         c.setUsuario(u);
         c.setMedico(m);
         c.setHospital(h);
@@ -119,12 +118,12 @@ public class CitaController {
      * @return la cita encontrada o 404 si no existe.
      */
     @GetMapping("/{documento_paciente}")
-    public ResponseEntity<CitaResponseDTO> findByDocumento(@PathVariable String documento_paciente){
-        return citaService.findByDocumento(documento_paciente)
+    public ResponseEntity<List<CitaResponseDTO>> findByDocumento(@PathVariable String documento_paciente){
+        List<CitaResponseDTO> response = citaService.findByDocumento(documento_paciente).stream()
                 .map(this::toResponse)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-
+                .toList();
+        System.out.println(response);
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -181,8 +180,8 @@ public class CitaController {
         responseDTO.setFecha(cita.getFecha());
         responseDTO.setHora(cita.getHora());
         responseDTO.setCosto(cita.getCosto());
-        if(cita.getTipoCita()!=null){
-            responseDTO.setTipoCita(cita.getTipoCita().getNombre());
+        if(cita.getEspecialidad()!=null){
+            responseDTO.setTipoCita(cita.getEspecialidad()   .getNombre());
         }
         if(cita.getUsuario()!=null){
             responseDTO.setNombreUsuario(cita.getUsuario().getNombre() + " " +  cita.getUsuario().getApellido());
