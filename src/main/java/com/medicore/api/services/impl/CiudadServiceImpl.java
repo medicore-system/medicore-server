@@ -1,14 +1,12 @@
 package com.medicore.api.services.impl;
 
-import com.medicore.api.dtos.CiudadRequest;
-import com.medicore.api.dtos.CiudadResponse;
+import com.medicore.api.dtos.ciudad.CiudadRequestDTO;
+import com.medicore.api.dtos.ciudad.CiudadResponseDTO;
 import com.medicore.api.entities.Ciudad;
 import com.medicore.api.entities.Departamento;
-import com.medicore.api.entities.Medico;
 import com.medicore.api.exceptions.CiudadDuplicadaException;
 import com.medicore.api.exceptions.RecursoNoEncontradoException;
-import com.medicore.api.mappers.CiudadMapper;
-import com.medicore.api.repositories.CiudadRepository;
+import com.medicore.api.repositories.ICiudadRepository;
 import com.medicore.api.repositories.DepartamentoRepository;
 import com.medicore.api.repositories.hospital.HospitalRepository;
 import com.medicore.api.services.ICiudadService;
@@ -23,27 +21,27 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CiudadServiceImpl implements ICiudadService {
 
-    private final CiudadRepository ciudadRepository;
+    private final ICiudadRepository ciudadRepository;
     private final DepartamentoRepository departamentoRepository;
     private final HospitalRepository hospitalRepository;
-    private final CiudadMapper ciudadMapper;
 
     @Override
     @Transactional(readOnly = true)
-    public List<CiudadResponse> listarCiudades() {
+    public List<CiudadResponseDTO> listarCiudades() {
         return ciudadRepository.findByEstadoTrue().stream()
                 .map(this::toResponse)
                 .toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Ciudad> findById(String codigo) {
         return ciudadRepository.findById(codigo);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<CiudadResponse> buscarCiudadesPorNombre(String nombre) {
+    public List<CiudadResponseDTO> buscarCiudadesPorNombre(String nombre) {
         return ciudadRepository.findByNombreContainingIgnoreCaseAndEstadoTrue(nombre).stream()
                 .map(this::toResponse)
                 .toList();
@@ -51,7 +49,7 @@ public class CiudadServiceImpl implements ICiudadService {
 
     @Override
     @Transactional(readOnly = true)
-    public CiudadResponse obtenerCiudad(String codigo) {
+    public CiudadResponseDTO obtenerCiudad(String codigo) {
         Ciudad ciudad = ciudadRepository.findById(codigo)
                 .orElseThrow(() -> new RecursoNoEncontradoException(
                         "Ciudad no encontrada con código: " + codigo));
@@ -60,7 +58,7 @@ public class CiudadServiceImpl implements ICiudadService {
 
     @Override
     @Transactional
-    public CiudadResponse crearCiudad(CiudadRequest request) {
+    public CiudadResponseDTO crearCiudad(CiudadRequestDTO request) {
         Departamento departamento = obtenerDepartamento(request.getIdDepartamento());
 
         if (ciudadRepository.existsByNombreIgnoreCaseAndDepartamentoId(
@@ -80,7 +78,7 @@ public class CiudadServiceImpl implements ICiudadService {
 
     @Override
     @Transactional
-    public CiudadResponse editarCiudad(String codigo, CiudadRequest request) {
+    public CiudadResponseDTO editarCiudad(String codigo, CiudadRequestDTO request) {
         Ciudad ciudad = ciudadRepository.findById(codigo)
                 .orElseThrow(() -> new RecursoNoEncontradoException(
                         "Ciudad no encontrada con código: " + codigo));
@@ -122,8 +120,13 @@ public class CiudadServiceImpl implements ICiudadService {
         return String.format("COL-%03d", siguiente);
     }
 
-    private CiudadResponse toResponse(Ciudad ciudad) {
+    private CiudadResponseDTO toResponse(Ciudad ciudad) {
         Long totalHospitales = hospitalRepository.countByCiudadCodigo(ciudad.getCodigo());
-        return ciudadMapper.toResponse(ciudad, totalHospitales);
+        CiudadResponseDTO response = new CiudadResponseDTO();
+        response.setCodigo(ciudad.getCodigo());
+        response.setNombre(ciudad.getNombre());
+        response.setDepartamento(ciudad.getDepartamento().getNombre());
+        response.setTotalHospitales(totalHospitales);
+        return response;
     }
 }

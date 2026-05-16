@@ -1,15 +1,16 @@
-package com.medicore.api.dtos;
+package com.medicore.api.dtos.ciudad;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class CiudadRequest {
+public class CiudadRequestDTO {
 
     @NotBlank(message = "El nombre de la ciudad es obligatorio")
     @Size(max = 50, message = "El nombre no debe superar los 50 caracteres")

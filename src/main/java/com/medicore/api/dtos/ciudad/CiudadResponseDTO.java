@@ -1,12 +1,11 @@
-package com.medicore.api.dtos;
+package com.medicore.api.dtos.ciudad;
 
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class CiudadResponse {
+public class CiudadResponseDTO {
 
     private String codigo;
     private String nombre;

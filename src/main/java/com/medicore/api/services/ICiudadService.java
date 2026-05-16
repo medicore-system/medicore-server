@@ -1,25 +1,25 @@
 package com.medicore.api.services;
 
-import com.medicore.api.dtos.CiudadRequest;
-import com.medicore.api.dtos.CiudadResponse;
+import com.medicore.api.dtos.ciudad.CiudadRequestDTO;
+import com.medicore.api.dtos.ciudad.CiudadResponseDTO;
 import com.medicore.api.entities.Ciudad;
-import com.medicore.api.entities.Medico;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface ICiudadService {
 
-    List<CiudadResponse> listarCiudades();
+    List<CiudadResponseDTO> listarCiudades();
 
-    List<CiudadResponse> buscarCiudadesPorNombre(String nombre);
+    List<CiudadResponseDTO> buscarCiudadesPorNombre(String nombre);
+
     Optional<Ciudad> findById(String codigo);
 
-    CiudadResponse obtenerCiudad(String codigo);
+    CiudadResponseDTO obtenerCiudad(String codigo);
 
-    CiudadResponse crearCiudad(CiudadRequest request);
+    CiudadResponseDTO crearCiudad(CiudadRequestDTO request);
 
-    CiudadResponse editarCiudad(String codigo, CiudadRequest request);
+    CiudadResponseDTO editarCiudad(String codigo, CiudadRequestDTO request);
 
     void eliminarCiudad(String codigo);
 }

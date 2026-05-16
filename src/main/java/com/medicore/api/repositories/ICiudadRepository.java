@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CiudadRepository extends JpaRepository<Ciudad, String> {
+public interface ICiudadRepository extends JpaRepository<Ciudad, String> {
 
     List<Ciudad> findByEstadoTrue();
 
