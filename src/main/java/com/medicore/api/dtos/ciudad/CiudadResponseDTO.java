@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CiudadResponseDTO {
 
-    private String codigo;
-    private String nombre;
-    private String departamento;
-    private Long totalHospitales;
+    private String code;
+    private String name;
+    private String department;
+    private String status;
 }

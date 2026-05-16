@@ -12,7 +12,7 @@ public interface ICiudadRepository extends JpaRepository<Ciudad, String> {
 
     List<Ciudad> findByEstadoTrue();
 
-    List<Ciudad> findByNombreContainingIgnoreCaseAndEstadoTrue(String nombre);
+    List<Ciudad> findByNombreContainingIgnoreCase(String nombre);
 
     boolean existsByNombreIgnoreCaseAndDepartamentoId(String nombre, Integer idDepartamento);
 
