@@ -6,37 +6,65 @@ import com.medicore.api.dtos.doctor.MedicoUpdateDTO;
 import com.medicore.api.entities.Ciudad;
 import com.medicore.api.entities.Especialidad;
 import com.medicore.api.entities.Medico;
-import com.medicore.api.repositories.CiudadRepository;
-import com.medicore.api.repositories.EspecialidadRepository;
 import com.medicore.api.services.ICiudadService;
 import com.medicore.api.services.IEspecialidadService;
 import com.medicore.api.services.IMedicoService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+/**
+ * Controlador REST encargado de gestionar las operaciones
+ * relacionadas con los médicos del sistema.
+ *
+ * <p>Permite consultar, registrar, actualizar e
+ * inhabilitar médicos.</p>
+ *
+ * Base URL: /Medicos
+ *
+ * @author Camila Prada
+ */
 @RestController
 @RequestMapping("/medicos")
 @RequiredArgsConstructor
 public class MedicoController   {
+    /**
+     * Servicio encargado de la lógica de médicos.
+     */
     private final IMedicoService medicoService;
+
+    /**
+     * Servicio encargado de la lógica de especialidades.
+     */
     private final IEspecialidadService especialidadService;
+
+    /**
+     * Servicio encargado de la lógica de ciudades.
+     */
     private final ICiudadService ciudadService;
+
+    /**
+     * Obtiene la lista de médicos activos registrados.
+     *
+     * @return lista de médicos en formato DTO
+     */
 
     @GetMapping
     public ResponseEntity<List<MedicoResponseDTO>> findAll() {
         List<MedicoResponseDTO> response = medicoService.findAll()
                 .stream()
-                .filter(medico -> Boolean.TRUE.equals(medico.getEstado()))
                 .map(this::toResponse)
                 .toList();
 
         return ResponseEntity.ok(response);
     }
-
+    /**
+     * Busca un médico por su documento.
+     *
+     * @param documento documento del médico
+     * @return médico encontrado o respuesta 404
+     */
     @GetMapping("/{documento}")
     public ResponseEntity<MedicoResponseDTO> findById(@PathVariable String documento) {
         return medicoService.findById(documento)
@@ -45,6 +73,12 @@ public class MedicoController   {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /**
+     * Registra un nuevo médico en el sistema.
+     *
+     * @param request datos del médico a registrar
+     * @return médico registrado en formato DTO
+     */
     @PostMapping
     public ResponseEntity<MedicoResponseDTO> save(@RequestBody MedicoRequestDTO request) {
 
@@ -72,7 +106,13 @@ public class MedicoController   {
                 toResponse(medicoService.save(medico))
         );
     }
-
+    /**
+     * Actualiza la información de un médico existente.
+     *
+     * @param documento documento del médico a actualizar
+     * @param request nuevos datos del médico
+     * @return médico actualizado o respuesta 404
+     */
         @PutMapping("/{documento}")
         public ResponseEntity<MedicoResponseDTO> update(@PathVariable String documento,
                                                         @RequestBody MedicoUpdateDTO request) {
@@ -93,14 +133,24 @@ public class MedicoController   {
                     .map(ResponseEntity::ok)
                     .orElse(ResponseEntity.notFound().build());
         }
-
+    /**
+     * Inhabilita un médico mediante su documento.
+     *
+     * @param documento documento del médico
+     * @return respuesta vacía indicando el resultado de la operación
+     */
     @DeleteMapping("/{documento}")
     public ResponseEntity<Void> delete(@PathVariable String documento) {
         return medicoService.delete(documento)
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.notFound().build();
     }
-
+    /**
+     * Convierte una entidad Medico en un DTO de respuesta.
+     *
+     * @param medico entidad médico
+     * @return objeto MedicoResponseDTO
+     */
     private MedicoResponseDTO toResponse(Medico medico) {
         MedicoResponseDTO response = new MedicoResponseDTO();
 

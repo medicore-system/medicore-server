@@ -9,7 +9,7 @@ import com.medicore.api.entities.Usuario;
 import com.medicore.api.entities.hospital.Hospital;
 import com.medicore.api.repositories.ICitaRepository;
 import com.medicore.api.repositories.IUsuarioRepository;
-import com.medicore.api.repositories.MedicoRepository;
+import com.medicore.api.repositories.IMedicoRepository;
 import com.medicore.api.repositories.hospital.HospitalRepository;
 import com.medicore.api.services.ICitaService;
 import com.medicore.api.services.IEspecialidadService;
@@ -56,7 +56,7 @@ public class CitaController {
     /**
      * Repositorio para la gestión de medicos.
      */
-    private final MedicoRepository medicoRepository;
+    private final IMedicoRepository medicoRepository;
 
     /**
      * Crea una nueva cita médica.
