@@ -2,6 +2,7 @@ package com.medicore.api.controllers.doctor;
 
 import com.medicore.api.dtos.doctor.MedicoRequestDTO;
 import com.medicore.api.dtos.doctor.MedicoResponseDTO;
+import com.medicore.api.dtos.doctor.MedicoUpdateDTO;
 import com.medicore.api.entities.Ciudad;
 import com.medicore.api.entities.Especialidad;
 import com.medicore.api.entities.Medico;
@@ -29,6 +30,7 @@ public class MedicoController   {
     public ResponseEntity<List<MedicoResponseDTO>> findAll() {
         List<MedicoResponseDTO> response = medicoService.findAll()
                 .stream()
+                .filter(medico -> Boolean.TRUE.equals(medico.getEstado()))
                 .map(this::toResponse)
                 .toList();
 
@@ -73,27 +75,19 @@ public class MedicoController   {
 
         @PutMapping("/{documento}")
         public ResponseEntity<MedicoResponseDTO> update(@PathVariable String documento,
-                                                        @RequestBody MedicoRequestDTO request) {
+                                                        @RequestBody MedicoUpdateDTO request) {
 
             Medico medico = new Medico();
-
-            medico.setDocumento(request.getDocumento());
             medico.setNombre(request.getNombre());
             medico.setApellido(request.getApellido());
+            Especialidad e = especialidadService.findById(request.getIdEspecialidad())
+                    .orElseThrow(() -> new RuntimeException("Especialidad no encontrada"));
+            medico.setEspecialidad(e);
             medico.setTelefono(request.getTelefono());
             medico.setEmail(request.getEmail());
-            medico.setEstado(request.getEstado());
-            // Especialidad
-            Especialidad especialidad = new Especialidad();
-            especialidad.setId(request.getIdEspecialidad());
-
-            medico.setEspecialidad(especialidad);
-
-            // Ciudad
-            Ciudad ciudad = new Ciudad();
-            ciudad.setCodigo(request.getCodigoCiudad());
-
-            medico.setCiudad(ciudad);
+            Ciudad c = ciudadService.findById(request.getCodigoCiudad())
+                    .orElseThrow(()-> new RuntimeException("Ciudad no encontrada"));
+            medico.setCiudad(c);
             return medicoService.update(documento, medico)
                     .map(this::toResponse)
                     .map(ResponseEntity::ok)
@@ -115,13 +109,10 @@ public class MedicoController   {
         response.setApellido(medico.getApellido());
         response.setTelefono(medico.getTelefono());
         response.setEmail(medico.getEmail());
-
-        response.setIdEspecialidad(medico.getEspecialidad().getId());
+        response.setNombreEspecialidad(medico.getEspecialidad().getNombre());
         response.setStatus(medico.getEstado() ? "ACTIVE" : "INACTIVE");
-
-
-        response.setCodigoCiudad(
-                medico.getCiudad() != null ? medico.getCiudad().getCodigo() : null
+        response.setNombreCiudad(
+                medico.getCiudad() != null ? medico.getCiudad().getNombre() : null
         );
 
         return response;

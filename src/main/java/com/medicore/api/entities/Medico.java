@@ -34,7 +34,7 @@ public class Medico {
     @Column(name = "estado", columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean estado;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "id_especialidad")
     private Especialidad especialidad;
 

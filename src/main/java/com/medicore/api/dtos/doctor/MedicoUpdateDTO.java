@@ -5,16 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class MedicoResponseDTO {
-    private String documento;
+@NoArgsConstructor
+public class MedicoUpdateDTO {
     private String nombre;
     private String apellido;
-    private String NombreEspecialidad;
+    private Integer idEspecialidad;
     private String telefono;
     private String email;
-    private String status;
-    private String nombreCiudad;
-
+    private String codigoCiudad;
 }

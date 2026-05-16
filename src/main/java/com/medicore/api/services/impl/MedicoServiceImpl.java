@@ -39,6 +39,8 @@ public class MedicoServiceImpl implements IMedicoService {
             existing.setApellido(medico.getApellido());
             existing.setTelefono(medico.getTelefono());
             existing.setEmail(medico.getEmail());
+            existing.setEspecialidad(medico.getEspecialidad());
+            existing.setCiudad(medico.getCiudad());
 
             return medicoRepository.save(existing);
         });
@@ -52,7 +54,7 @@ public class MedicoServiceImpl implements IMedicoService {
 
             Medico medico = medicoOptional.get();
 
-            medico.setEstado(false);
+            medico.setEstado(!medico.getEstado());
 
             medicoRepository.save(medico);
 
