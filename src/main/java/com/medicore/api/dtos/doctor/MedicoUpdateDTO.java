@@ -1,35 +1,30 @@
 package com.medicore.api.dtos.doctor;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
  * DTO utilizado para recibir la información
- * enviada desde el frontend al registrar
- * un médico en el sistema.
+ * necesaria para actualizar un médico existente.
  *
  * <p>
- * Contiene los datos necesarios para crear
- * un nuevo médico.
+ * Contiene únicamente los datos editables
+ * del médico dentro del sistema.
  * </p>
  */
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
-//Request --> Lo que el frontend envia(la info que enviamos)
-public class MedicoRequestDTO {
+public class MedicoUpdateDTO {
 
     /**
-     * Documento de identificación del médico.
-     */
-    private String documento;
-
-    /**
-     * Nombre del médico.
+     * Nuevo nombre del médico.
      */
     private String nombre;
 
     /**
-     * Apellido del médico.
+     * Nuevo apellido del médico.
      */
     private String apellido;
 
@@ -39,12 +34,12 @@ public class MedicoRequestDTO {
     private Integer idEspecialidad;
 
     /**
-     * Número telefónico del médico.
+     * Nuevo número telefónico del médico.
      */
     private String telefono;
 
     /**
-     * Correo electrónico del médico.
+     * Nuevo correo electrónico del médico.
      */
     private String email;
 
@@ -52,10 +47,4 @@ public class MedicoRequestDTO {
      * Código de la ciudad asociada al médico.
      */
     private String codigoCiudad;
-
-    /**
-     * Estado del médico dentro del sistema.
-     */
-    private Boolean estado;
-
 }

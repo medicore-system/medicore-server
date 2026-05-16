@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EspecialidadResponseDTO {
 
-    private Long id;
+    private Integer id;
     private String nombre;
 
 }

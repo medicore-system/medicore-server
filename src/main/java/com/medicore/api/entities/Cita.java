@@ -78,7 +78,7 @@ public class Cita {
      * <p>Representa la categoría o clasificación
      * de la cita médica.</p>
      */
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "id_tipo", nullable = false)
     private Especialidad especialidad;
 
