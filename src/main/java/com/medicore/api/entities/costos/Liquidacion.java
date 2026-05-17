@@ -2,11 +2,13 @@ package com.medicore.api.entities.costos;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.medicore.api.entities.Eps;
 import com.medicore.api.entities.Factura;
@@ -21,12 +23,17 @@ import com.medicore.api.entities.Factura;
 public class Liquidacion {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @GeneratedValue(generator = "liquidacion_seq")
+  @GenericGenerator(name = "liquidacion_seq", strategy = "com.medicore.api.util.PrefixedIdGenerator", parameters = {
+      @Parameter(name = "prefix", value = "LIQ-"),
+      @Parameter(name = "sequence", value = "seq_liquidacion")
+  })
+  @Column(name = "codigo", length = 50)
+  private String codigo;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "codigo_eps", nullable = false)
-  private Eps codigo_eps;
+  private Eps eps;
 
   @Column(name = "fecha_inicio", nullable = false)
   private LocalDate fechaInicio;

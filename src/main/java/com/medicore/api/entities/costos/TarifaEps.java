@@ -2,6 +2,8 @@ package com.medicore.api.entities.costos;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -18,8 +20,17 @@ import com.medicore.api.entities.Servicio;
 public class TarifaEps {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(generator = "tarifa_seq")
+    @GenericGenerator(
+        name = "tarifa_seq",
+        strategy = "com.medicore.api.util.PrefixedIdGenerator",
+        parameters = {
+            @Parameter(name = "prefix", value = "TAEPS-"),
+            @Parameter(name = "sequence", value = "seq_tarifa_eps")
+        }
+    )
+    @Column(name = "codigo", length = 50)
+    private String codigo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "codigo_eps", nullable = false)

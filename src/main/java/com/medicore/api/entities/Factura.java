@@ -46,6 +46,6 @@ public class Factura {
     private Hospital hospital;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_liquidacion")
+    @JoinColumn(name = "codigo_liquidacion")
     private Liquidacion liquidacion;
 }
