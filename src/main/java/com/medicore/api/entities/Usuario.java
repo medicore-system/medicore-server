@@ -26,31 +26,31 @@ public class Usuario {
      * Documento único de identificación del usuario.
      */
     @Id
-    @Column(name = "documento", nullable = false, length = 50)
+    @Column(name = "documento", nullable = false, length = 100)
     private String documento;
 
     /**
      * Nombre del usuario.
      */
-    @Column(name = "nombre", nullable = false, length = 50)
+    @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
 
     /**
      * Apellido del usuario.
      */
-    @Column(name = "apellido", nullable = false, length = 50)
+    @Column(name = "apellido", nullable = false, length = 100)
     private String apellido;
 
     /**
      * Correo electrónico del usuario.
      */
-    @Column(name = "correo", nullable = false, length = 50)
+    @Column(name = "correo", nullable = false, length = 100)
     private String correo;
 
     /**
      * Número telefónico del usuario.
      */
-    @Column(name = "telefono", nullable = false, length = 50)
+    @Column(name = "telefono", nullable = false, length = 100)
     private String telefono;
 
     /**
@@ -70,7 +70,7 @@ public class Usuario {
     /**
      * Contraseña del usuario para autenticación.
      */
-    @Column(name = "contrasena", nullable = false, length = 50) // Se agregó el nullable = false.
+    @Column(name = "contrasena", nullable = false, length = 200) // Se agregó el nullable = false.
     private String contrasena;
 
 

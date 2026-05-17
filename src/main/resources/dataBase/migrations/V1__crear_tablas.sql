@@ -63,7 +63,7 @@ create table usuario (
     correo           varchar(50)  not null,
     telefono         varchar(50)  not null,
     fecha_nacimiento date         ,
-    contrasena       varchar(50)  ,
+    contrasena       varchar(300)  ,
     estado           boolean      not null default true,
     rol              varchar(20)  not null default 'PACIENTE',
     codigo_eps       varchar(50)  not null,
