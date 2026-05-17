@@ -13,7 +13,7 @@ import com.medicore.api.exceptions.RecursoNoEncontradoException;
 import com.medicore.api.exceptions.ServicioDuplicadoException;
 import com.medicore.api.mappers.ServicioMapper;
 import com.medicore.api.repositories.IFacturaRepository;
-import com.medicore.api.repositories.HistorialClinicoRepository;
+import com.medicore.api.repositories.IHistorialClinicoRepository;
 import com.medicore.api.repositories.IServicioRepository;
 import com.medicore.api.repositories.ITipoServicioRepository;
 import com.medicore.api.services.IServicioService;
@@ -31,7 +31,7 @@ public class ServicioServiceImpl implements IServicioService {
 
     private final IServicioRepository servicioRepository;
     private final ITipoServicioRepository ITipoServicioRepository;
-    private final HistorialClinicoRepository historialClinicoRepository;
+    private final IHistorialClinicoRepository historialClinicoRepository;
     private final IFacturaRepository facturaRepository;
     private final ServicioMapper servicioMapper;
 

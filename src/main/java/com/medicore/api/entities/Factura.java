@@ -1,5 +1,6 @@
 package com.medicore.api.entities;
 
+import com.medicore.api.entities.costos.Liquidacion;
 import com.medicore.api.entities.hospital.Hospital;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,7 +18,7 @@ import java.time.LocalDate;
 public class Factura {
 
     @Id
-    @Column(name = "codigo", nullable = false, length = 50)
+    @Column(name = "codigo", length = 50)
     private String codigo;
 
     @Column(name = "fecha", nullable = false)
@@ -34,18 +35,22 @@ public class Factura {
     private String descripcion;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "codigo_cita", nullable = false)
+    @JoinColumn(name = "codigo_cita", nullable = false, referencedColumnName = "codigo")
     private Cita cita;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "codigo_eps", nullable = false)
+    @JoinColumn(name = "codigo_eps", nullable = false, referencedColumnName = "codigo")
     private Eps eps;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "codigo_hospital", nullable = false)
+    @JoinColumn(name = "codigo_hospital", nullable = false, referencedColumnName = "codigo")
     private Hospital hospital;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "codigo_servicio")
+    @JoinColumn(name = "codigo_liquidacion")
+    private Liquidacion liquidacion;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "codigo_servicio", referencedColumnName = "codigo")
     private Servicio servicio;
 }
