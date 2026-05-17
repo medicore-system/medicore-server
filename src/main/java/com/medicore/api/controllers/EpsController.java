@@ -25,7 +25,7 @@ import java.util.List;
  * @author Manuel
  */
 @RestController
-@RequestMapping("/Eps")
+@RequestMapping("/eps")
 @RequiredArgsConstructor
 public class EpsController {
 

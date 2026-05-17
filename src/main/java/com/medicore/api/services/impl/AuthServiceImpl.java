@@ -38,7 +38,8 @@ public class AuthServiceImpl implements IAuthService {
         if (usuarioRepository.findByDocumento(request.getDocumento()).isPresent()) {
             throw new IllegalArgumentException("Username already taken: " + request.getDocumento());
         }
-
+        System.out.println("CIUDAD ID = " + request.getCodigoCiudad());
+        System.out.println("EPS ID = " + request.getCodigoEPS());
         Usuario usuario = new Usuario();
         usuario.setDocumento(request.getDocumento());
         usuario.setNombre(request.getNombre());
@@ -61,6 +62,8 @@ public class AuthServiceImpl implements IAuthService {
 
 
     public AuthResponseDTO login(LoginRequestDTO request) {
+        System.out.println("DTO CORREO: " + request.getCorreo());
+        System.out.println("DTO PASS: " + request.getContrasena());
         Usuario usuario = usuarioRepository.findByCorreo(request.getCorreo())
                 .orElseThrow();
 
