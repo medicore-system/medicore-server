@@ -25,8 +25,8 @@ public class Liquidacion {
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "id_eps", nullable = false)
-  private Eps eps;
+  @JoinColumn(name = "codigo_eps", nullable = false)
+  private Eps codigo_eps;
 
   @Column(name = "fecha_inicio", nullable = false)
   private LocalDate fechaInicio;
