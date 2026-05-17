@@ -13,16 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Controlador REST para la gestión administrativa de servicios médicos.
- *
- * Endpoints requeridos por Swagger:
- * GET    /services
- * POST   /services
- * GET    /services/{id}
- * PUT    /services/{id}
- * DELETE /services/{id}
- */
 @RestController
 @RequestMapping("/services")
 @RequiredArgsConstructor

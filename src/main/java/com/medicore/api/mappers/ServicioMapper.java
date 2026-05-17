@@ -5,9 +5,12 @@ import com.medicore.api.dtos.servicio.ServicioFacturaResponse;
 import com.medicore.api.dtos.servicio.ServicioHistorialResponse;
 import com.medicore.api.dtos.servicio.ServicioResponse;
 import com.medicore.api.dtos.servicio.TipoServicioResponse;
+import com.medicore.api.entities.Factura;
+import com.medicore.api.entities.HistorialClinico;
+import com.medicore.api.entities.Medico;
 import com.medicore.api.entities.Servicio;
 import com.medicore.api.entities.TipoServicio;
-import com.medicore.api.repositories.ServicioRepository;
+import com.medicore.api.entities.Usuario;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -26,7 +29,7 @@ public class ServicioMapper {
                 .estado(servicio.getEstado())
                 .procedimiento(servicio.getProcedimiento())
                 .resultados(servicio.getResultados())
-                .codigoHistorial(servicio.getCodigoHistorial())
+                .codigoHistorial(obtenerCodigoHistorial(servicio))
                 .build();
     }
 
@@ -45,7 +48,7 @@ public class ServicioMapper {
                 .estado(servicio.getEstado())
                 .procedimiento(servicio.getProcedimiento())
                 .resultados(servicio.getResultados())
-                .codigoHistorial(servicio.getCodigoHistorial())
+                .codigoHistorial(obtenerCodigoHistorial(servicio))
                 .historialClinico(historialClinico)
                 .facturas(facturas)
                 .build();
@@ -59,39 +62,52 @@ public class ServicioMapper {
                 .build();
     }
 
-    public ServicioHistorialResponse toHistorialResponse(
-            ServicioRepository.HistorialClinicoResumenProjection projection
-    ) {
-        if (projection == null) {
+    public ServicioHistorialResponse toHistorialResponse(HistorialClinico historialClinico) {
+        if (historialClinico == null) {
             return null;
         }
 
+        Usuario paciente = historialClinico.getPaciente();
+        Medico medico = historialClinico.getMedico();
+
         return ServicioHistorialResponse.builder()
-                .codigo(projection.getCodigo())
-                .fecha(projection.getFecha())
-                .tipo(projection.getTipo())
-                .descripcion(projection.getDescripcion())
-                .documentoPaciente(projection.getDocumentoPaciente())
-                .nombrePaciente(projection.getNombrePaciente())
-                .documentoMedico(projection.getDocumentoMedico())
-                .nombreMedico(projection.getNombreMedico())
+                .codigo(historialClinico.getCodigo())
+                .fecha(historialClinico.getFecha())
+                .tipo(historialClinico.getTipo())
+                .descripcion(historialClinico.getDescripcion())
+                .documentoPaciente(paciente != null ? paciente.getDocumento() : null)
+                .nombrePaciente(paciente != null ? nombreCompleto(paciente.getNombre(), paciente.getApellido()) : null)
+                .documentoMedico(medico != null ? medico.getDocumento() : null)
+                .nombreMedico(medico != null ? nombreCompleto(medico.getNombre(), medico.getApellido()) : null)
                 .build();
     }
 
-    public ServicioFacturaResponse toFacturaResponse(
-            ServicioRepository.FacturaServicioProjection projection
-    ) {
+    public ServicioFacturaResponse toFacturaResponse(Factura factura) {
         return ServicioFacturaResponse.builder()
-                .codigo(projection.getCodigo())
-                .fecha(projection.getFecha())
-                .estado(projection.getEstado())
-                .costoTotal(projection.getCostoTotal())
-                .descripcion(projection.getDescripcion())
-                .codigoCita(projection.getCodigoCita())
-                .codigoEps(projection.getCodigoEps())
-                .nombreEps(projection.getNombreEps())
-                .codigoHospital(projection.getCodigoHospital())
-                .nombreHospital(projection.getNombreHospital())
+                .codigo(factura.getCodigo())
+                .fecha(factura.getFecha())
+                .estado(factura.getEstado())
+                .costoTotal(factura.getCostoTotal())
+                .descripcion(factura.getDescripcion())
+                .codigoCita(factura.getCita() != null ? factura.getCita().getCodigo() : null)
+                .codigoEps(factura.getEps() != null ? factura.getEps().getCodigo() : null)
+                .nombreEps(factura.getEps() != null ? factura.getEps().getNombre() : null)
+                .codigoHospital(factura.getHospital() != null ? factura.getHospital().getCodigo() : null)
+                .nombreHospital(factura.getHospital() != null ? factura.getHospital().getNombre() : null)
                 .build();
+    }
+
+    private String obtenerCodigoHistorial(Servicio servicio) {
+        return servicio.getHistorialClinico() != null
+                ? servicio.getHistorialClinico().getCodigo()
+                : null;
+    }
+
+    private String nombreCompleto(String nombre, String apellido) {
+        return String.join(" ", valorSeguro(nombre), valorSeguro(apellido)).trim();
+    }
+
+    private String valorSeguro(String valor) {
+        return valor == null ? "" : valor;
     }
 }

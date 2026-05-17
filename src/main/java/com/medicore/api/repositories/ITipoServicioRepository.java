@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface TipoServicioRepository extends JpaRepository<TipoServicio, Integer> {
+public interface ITipoServicioRepository extends JpaRepository<TipoServicio, Integer> {
 
     List<TipoServicio> findAllByOrderByNombreAsc();
 }
