@@ -6,7 +6,7 @@ import com.medicore.api.dtos.Usuario.UsuarioUpdateRequestDTO;
 import com.medicore.api.entities.Ciudad;
 import com.medicore.api.entities.Eps;
 import com.medicore.api.entities.Usuario;
-import com.medicore.api.repositories.CiudadRepository;
+import com.medicore.api.repositories.ICiudadRepository;
 import com.medicore.api.repositories.IEpsRepository;
 import com.medicore.api.services.IUsuarioService;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,7 @@ public class UsuarioController {
     /**
      * Repositorio para la gestión de ciudades.
      */
-    private final CiudadRepository ciudadRepository;
+    private final ICiudadRepository ciudadRepository;
 
     /**
      * Repositorio para la gestión de EPS.

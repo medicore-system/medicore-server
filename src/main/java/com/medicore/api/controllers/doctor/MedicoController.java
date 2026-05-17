@@ -5,12 +5,9 @@ import com.medicore.api.dtos.doctor.MedicoResponseDTO;
 import com.medicore.api.entities.Ciudad;
 import com.medicore.api.entities.Especialidad;
 import com.medicore.api.entities.Medico;
-import com.medicore.api.repositories.CiudadRepository;
-import com.medicore.api.repositories.EspecialidadRepository;
 import com.medicore.api.services.ICiudadService;
 import com.medicore.api.services.IEspecialidadService;
 import com.medicore.api.services.IMedicoService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -116,12 +113,12 @@ public class MedicoController   {
         response.setTelefono(medico.getTelefono());
         response.setEmail(medico.getEmail());
 
-        response.setIdEspecialidad(medico.getEspecialidad().getId());
+        response.setNombreEspecialidad(medico.getEspecialidad().getNombre());
         response.setStatus(medico.getEstado() ? "ACTIVE" : "INACTIVE");
 
 
-        response.setCodigoCiudad(
-                medico.getCiudad() != null ? medico.getCiudad().getCodigo() : null
+        response.setNombreCiudad(
+                medico.getCiudad() != null ? medico.getCiudad().getNombre() : null
         );
 
         return response;
