@@ -8,7 +8,7 @@ import com.medicore.api.entities.costos.TarifaEps;
 import com.medicore.api.exceptions.RecursoNoEncontradoException;
 import com.medicore.api.mappers.TarifaEpsMapper;
 import com.medicore.api.repositories.IEpsRepository;
-import com.medicore.api.repositories.ServicioRepository;
+import com.medicore.api.repositories.IServicioRepository;
 import com.medicore.api.repositories.costos.TarifaEpsRepository;
 import com.medicore.api.services.ITarifaEpsService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class TarifaEpsServiceImpl implements ITarifaEpsService {
 
     private final TarifaEpsRepository tarifaEpsRepository;
     private final IEpsRepository epsRepository;
-    private final ServicioRepository servicioRepository;
+    private final IServicioRepository servicioRepository;
     private final TarifaEpsMapper tarifaEpsMapper;
 
     @Override
