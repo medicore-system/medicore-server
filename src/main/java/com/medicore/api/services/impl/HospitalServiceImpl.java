@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * y consulta de hospitales.</p>
  *
  * <p>Utiliza los repositorios {@link HospitalRepository} y
- * {@link ICiudadRepository} para acceder a la capa de persistencia.
+ * {@link CiudadRepository} para acceder a la capa de persistencia.
  * Todas las operaciones de escritura son transaccionales, mientras que
  * las de lectura se marcan como de solo lectura para optimización.</p>
  *
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  * @author Cristian Camilo Salazar Arenas
  * @see IHospitalService
  * @see HospitalRepository
- * @see ICiudadRepository
+ * @see CiudadRepository
  */
 @Service
 @RequiredArgsConstructor
