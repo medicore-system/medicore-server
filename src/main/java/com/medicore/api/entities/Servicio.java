@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "servicio")
@@ -37,8 +39,13 @@ public class Servicio {
     @JoinColumn(name = "id_tipo_servicio", nullable = false)
     private TipoServicio tipoServicio;
 
-    @Column(name = "codigo_historial", length = 50)
-    private String codigoHistorial;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "codigo_historial")
+    private HistorialClinico historialClinico;
+
+    @OneToMany(mappedBy = "servicio", fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Factura> facturas = new ArrayList<>();
 
     @Column(name = "estado", nullable = false)
     @Builder.Default
