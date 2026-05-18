@@ -1,11 +1,12 @@
 package com.medicore.api.entities;
 
+import com.medicore.api.entities.costos.Liquidacion;
 import com.medicore.api.entities.hospital.Hospital;
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import com.medicore.api.entities.costos.Liquidacion;
 
 @Entity
 @Table(name = "factura")
@@ -48,4 +49,8 @@ public class Factura {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "codigo_liquidacion")
     private Liquidacion liquidacion;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "codigo_servicio", referencedColumnName = "codigo")
+    private Servicio servicio;
 }
