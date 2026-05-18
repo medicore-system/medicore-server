@@ -1,5 +1,6 @@
 package com.medicore.api.entities;
 
+import com.medicore.api.entities.hospital.Hospital;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,4 +31,10 @@ public class Ciudad {
 
     @OneToMany(mappedBy = "ciudad")
     private List<Usuario> pacientes;
+
+    @OneToMany(mappedBy = "ciudad")
+    private List<Hospital> hospitales;
+
+    @OneToMany(mappedBy = "ciudad")
+    private List<AsignacionMedico> asignacionMedicos;
 }
