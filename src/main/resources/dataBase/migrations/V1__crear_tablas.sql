@@ -111,7 +111,6 @@ create table cita (
     codigo             varchar(50)   primary key,
     estado             varchar(20)   not null default 'PENDIENTE',
     fecha              timestamp     not null,
-    hora               varchar(20)   not null,
     costo              numeric(12,2) default 10000.00,
     id_tipo            int           not null,
     documento_paciente varchar(50)   not null,
@@ -133,25 +132,39 @@ create table notificacion_cita (
     constraint fk_notificacion_cita foreign key (codigo_cita) references cita(codigo)
 );
 
-create table asignacion_medico (
-    codigo           varchar(50) primary key,
-    fecha            date        not null,
-    estado           boolean     not null default true,
-    documento_medico varchar(50) not null,
-    codigo_hai       varchar(50) not null,
-    constraint fk_asignacion_medico foreign key (documento_medico) references medico(documento),
-    constraint fk_asignacion_hai    foreign key (codigo_hai)       references hospital_area_interna(codigo)
+create table horario_medico (
+    codigo serial primary key,
+    horario varchar(50) not null unique,
+    siguiente_horario varchar(50) not null
 );
 
-create table horario_medico (
-    codigo            varchar(50) primary key,
-    dia_semana        varchar(15) not null,
-    hora_inicio       time        not null,
-    hora_fin          time        not null,
-    estado            boolean     not null default true,
-    codigo_asignacion varchar(50) not null,
-    constraint fk_horario_asignacion foreign key (codigo_asignacion) references asignacion_medico(codigo),
-    constraint chk_horario           check (hora_fin > hora_inicio)
+create table asignacion_medico (
+    codigo serial primary key,
+    fecha_inicio date not null,
+    fecha_fin date not null,
+
+    codigo_hospital varchar(50) not null,
+    documento_medico varchar(50) not null,
+    codigo_ciudad varchar(50) not null,
+    codigo_horario integer not null,
+
+    estado boolean not null default true,
+
+    constraint fk_asignacion_hospital
+        foreign key (codigo_hospital)
+        references hospital(codigo),
+
+    constraint fk_asignacion_medico
+        foreign key (documento_medico)
+        references medico(documento),
+
+    constraint fk_asignacion_ciudad
+        foreign key (codigo_ciudad)
+        references ciudad(codigo),
+
+    constraint fk_asignacion_horario
+        foreign key (codigo_horario)
+        references horario_medico(codigo)
 );
 
 create table factura (

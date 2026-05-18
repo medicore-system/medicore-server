@@ -39,12 +39,7 @@ public class CitaResponseDTO {
     /**
      * Fecha y hora programada de la cita.
      */
-    private LocalDateTime fecha;
-
-    /**
-     * Hora específica asignada para la cita.
-     */
-    private String hora;
+    private String fecha;
 
     /**
      * Valor monetario de la cita.

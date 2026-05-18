@@ -25,7 +25,7 @@ public class Liquidacion {
   @Id
   @GeneratedValue(generator = "liquidacion_seq")
   @GenericGenerator(name = "liquidacion_seq", strategy = "com.medicore.api.util.PrefixedIdGenerator", parameters = {
-      @Parameter(name = "prefix", value = "LIQ-"),
+      @Parameter(name = "prefix", value = "LIQ"),
       @Parameter(name = "sequence", value = "seq_liquidacion")
   })
   @Column(name = "codigo", length = 50)

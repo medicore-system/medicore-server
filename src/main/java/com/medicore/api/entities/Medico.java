@@ -81,4 +81,10 @@ public class Medico {
      */
     @OneToMany(mappedBy = "medico")
     private List<Cita> citas;
+
+    /**
+     * Lista de asignaciones de un médico.
+     */
+    @OneToMany(mappedBy = "medico")
+    private List<AsignacionMedico> asiganciones;
 }

@@ -21,10 +21,7 @@ public class CitaCreateRequestDTO {
      * Fecha y hora de la cita médica.
      */
     private LocalDateTime fecha;
-    /**
-     * Costo asociado a la cita medica
-     */
-    private String hora;
+
     /**
      * Costo asociado a la cita médica.
      */

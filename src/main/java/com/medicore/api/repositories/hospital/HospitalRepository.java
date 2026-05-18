@@ -4,6 +4,8 @@ import com.medicore.api.entities.hospital.Hospital;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Repositorio Spring Data JPA para la entidad {@link Hospital}.
  *
@@ -40,4 +42,12 @@ public interface HospitalRepository extends JpaRepository<Hospital, String> {
      *         ciudad, retorna {@code 0}
      */
     Long countByCiudadCodigo(String codigoCiudad);
+
+    /**
+     * Lista todos los hospitales que pertenezcan a una ciudad especifica
+     * que esten activos
+     *
+     * @param codigoCiudad codigo unico de la ciudad
+     */
+    List<Hospital> findByCiudadCodigoAndEstadoTrue(String codigoCiudad);
 }

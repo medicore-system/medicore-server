@@ -61,12 +61,6 @@ public class Cita {
     private LocalDateTime fecha;
 
     /**
-     * Hora específica asignada a la cita.
-     */
-    @Column(name = "hora", nullable = false)
-    private String hora;
-
-    /**
      * Valor monetario asociado a la cita.
      */
     @Column(name = "costo",  nullable = false)
