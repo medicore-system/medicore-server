@@ -26,4 +26,12 @@ public interface IUsuarioRepository extends JpaRepository<Usuario, String> {
      * o vacío si no existe.
      */
     Optional<Usuario> findByDocumento(String documento);
+    /**
+     * Busca un usuario por su documento de identificación.
+     *
+     * @param correo documento del usuario.
+     * @return un Optional con el usuario encontrado,
+     * o vacío si no existe.
+     */
+    Optional<Usuario> findByCorreo(String correo);
 }
