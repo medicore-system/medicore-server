@@ -32,6 +32,17 @@ public class MedicoController   {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/activos")
+    public ResponseEntity<List<MedicoResponseDTO>> findAllActivos() {
+        List<MedicoResponseDTO> response = medicoService.findAll()
+                .stream()
+                .filter(medico -> Boolean.TRUE.equals(medico.getEstado()))
+                .map(this::toResponse)
+                .toList();
+
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/{documento}")
     public ResponseEntity<MedicoResponseDTO> findById(@PathVariable String documento) {
         return medicoService.findById(documento)
