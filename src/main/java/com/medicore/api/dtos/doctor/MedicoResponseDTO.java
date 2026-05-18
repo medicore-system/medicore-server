@@ -54,6 +54,11 @@ public class MedicoResponseDTO {
     private String status;
 
     /**
+     * Codigo de la ciudad asociada al médico.
+     */
+    private String codigoCiudad;
+
+    /**
      * Nombre de la ciudad asociada al médico.
      */
     private String nombreCiudad;

@@ -15,5 +15,6 @@ public class AsignacionMedicoResponseDTO {
     private String nombreCiudad;
     private String nombreHospital;
     private String horario;
+    private Boolean estado;
 
 }
