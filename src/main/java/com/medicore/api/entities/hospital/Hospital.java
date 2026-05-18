@@ -1,5 +1,6 @@
 package com.medicore.api.entities.hospital;
 
+import com.medicore.api.entities.AsignacionMedico;
 import com.medicore.api.entities.Cita;
 import com.medicore.api.entities.Ciudad;
 import com.medicore.api.entities.areainterna.HospitalAreaInterna;
@@ -115,4 +116,16 @@ public class Hospital {
      */
     @OneToMany(mappedBy = "hospital")
     private List<Cita> citas;
+
+    /**
+     * Lista de asignaciones asociadas al hospital.
+     *
+     * <p>Representa la relación uno a muchos entre
+     * un hospital y sus asignaciones médicas.</p>
+     *
+     * <p>Un hospital puede tener múltiples asignaciones
+     * registradas.</p>
+     */
+    @OneToMany(mappedBy = "hospital")
+    private List<AsignacionMedico> asiganciones;
 }

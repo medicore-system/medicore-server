@@ -18,7 +18,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.TextStyle;
 import java.util.List;
+import java.util.Locale;
+
 /**
  * Controlador REST encargado de gestionar las operaciones
  * relacionadas con las citas médicas.
@@ -88,7 +92,6 @@ public class CitaController {
         String codigo = String.format("CIT%03d", next);
         c.setCodigo(codigo);
         c.setFecha(cita.getFecha());
-        c.setHora(cita.getHora());
         c.setCosto(cita.getCosto());
         c.setEspecialidad(e);
         c.setUsuario(u);
@@ -177,8 +180,10 @@ public class CitaController {
         CitaResponseDTO responseDTO = new CitaResponseDTO();
         responseDTO.setCodigo(cita.getCodigo());
         responseDTO.setEstado(cita.getEstado());
-        responseDTO.setFecha(cita.getFecha());
-        responseDTO.setHora(cita.getHora());
+        responseDTO.setFecha(cita.getFecha().getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("es", "ES")) + " "
+        + cita.getFecha().getDayOfMonth() + " de "
+        + cita.getFecha().getMonth().getDisplayName(TextStyle.FULL, new Locale("es", "ES")) + " - "
+        + cita.getFecha().getHour() + ":" + cita.getFecha().getMinute());
         responseDTO.setCosto(cita.getCosto());
         if(cita.getEspecialidad()!=null){
             responseDTO.setTipoCita(cita.getEspecialidad()   .getNombre());
