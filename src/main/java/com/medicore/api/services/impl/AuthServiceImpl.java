@@ -39,7 +39,7 @@ public class AuthServiceImpl implements IAuthService {
             throw new IllegalArgumentException("Username already taken: " + request.getDocumento());
         }
         System.out.println("CIUDAD ID = " + request.getCodigoCiudad());
-        System.out.println("EPS ID = " + request.getCodigoEPS());
+        System.out.println("EPS ID = " + request.getCodigoEps());
         Usuario usuario = new Usuario();
         usuario.setDocumento(request.getDocumento());
         usuario.setNombre(request.getNombre());
@@ -50,13 +50,13 @@ public class AuthServiceImpl implements IAuthService {
         Ciudad ciudad = ciudadRepository.findById(request.getCodigoCiudad())
                 .orElseThrow(() -> new RuntimeException("Ciudad no encontrada"));
         usuario.setCiudad(ciudad);
-        Eps e = epsRepository.findById(request.getCodigoEPS())
+        Eps e = epsRepository.findById(request.getCodigoEps())
                 .orElseThrow(() -> new RuntimeException("Eps no encontrada"));
         usuario.setEps(e);
         usuarioRepository.save(usuario);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(usuario.getCorreo());
-        return buildResponse(usuario, userDetails);
+        return buildResponse(usuario, userDetails, false);
     }
 
 
@@ -69,16 +69,16 @@ public class AuthServiceImpl implements IAuthService {
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getCorreo());
 
-        return buildResponse(usuario, userDetails);
+        return buildResponse(usuario, userDetails, true);
     }
 
 
-    private AuthResponseDTO buildResponse(Usuario usuario, UserDetails userDetails) {
-
-        String token = jwtUtil.generateToken(userDetails);
-
+    private AuthResponseDTO buildResponse(Usuario usuario, UserDetails userDetails, boolean bandera) {
         AuthResponseDTO response = new AuthResponseDTO();
-        response.setToken(token);
+        if(bandera){
+            String token = jwtUtil.generateToken(userDetails);
+            response.setToken(token);
+        }
         response.setCorreo(usuario.getCorreo());
         response.setRole(usuario.getRol());
 

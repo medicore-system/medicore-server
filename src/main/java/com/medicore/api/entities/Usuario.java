@@ -44,7 +44,7 @@ public class Usuario {
     /**
      * Correo electrónico del usuario.
      */
-    @Column(name = "correo", nullable = false, length = 100)
+    @Column(name = "correo", nullable = false, length = 100, unique = true)
     private String correo;
 
     /**

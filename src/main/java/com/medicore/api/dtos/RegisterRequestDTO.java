@@ -11,5 +11,5 @@ public class RegisterRequestDTO {
     private String contrasena;
     private String telefono;
     private String codigoCiudad;
-    private String codigoEPS;
+    private String codigoEps;
 }
