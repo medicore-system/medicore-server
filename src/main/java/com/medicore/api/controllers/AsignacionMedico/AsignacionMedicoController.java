@@ -118,6 +118,7 @@ public class AsignacionMedicoController {
         dto.setNombreCiudad(a.getCiudad().getNombre());
         dto.setNombreHospital(a.getHospital().getNombre());
         dto.setHorario(a.getHorario().getHorario());
+        dto.setEstado(a.getEstado());
         return dto;
     }
 }

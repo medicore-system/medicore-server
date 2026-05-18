@@ -132,6 +132,10 @@ public class MedicoController   {
                 medico.getCiudad() != null ? medico.getCiudad().getNombre() : null
         );
 
+        response.setCodigoCiudad(
+                medico.getCiudad() != null ? medico.getCiudad().getCodigo() : null
+        );
+
         return response;
     }
 
