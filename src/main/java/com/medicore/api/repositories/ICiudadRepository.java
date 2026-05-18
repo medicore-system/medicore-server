@@ -22,7 +22,7 @@ public interface ICiudadRepository extends JpaRepository<Ciudad, String> {
     @Query(value = """
             SELECT COALESCE(MAX(CAST(SUBSTRING(codigo FROM 5) AS INTEGER)), 0)
             FROM ciudad
-            WHERE codigo ~ '^COL-[0-9]+$'
+            WHERE codigo ~ '^CIU-[0-9]+$'
             """, nativeQuery = true)
     int findMaxCodigoSequence();
 }
