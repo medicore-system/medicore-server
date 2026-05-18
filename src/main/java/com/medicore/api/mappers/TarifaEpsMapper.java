@@ -1,7 +1,7 @@
 package com.medicore.api.mappers;
 
 import com.medicore.api.dtos.tarifa.TarifaEpsResponseDTO;
-import com.medicore.api.entities.TarifaEps;
+import com.medicore.api.entities.costos.TarifaEps;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
