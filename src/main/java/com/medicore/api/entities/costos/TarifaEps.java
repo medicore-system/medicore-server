@@ -25,7 +25,7 @@ public class TarifaEps {
         name = "tarifa_seq",
         strategy = "com.medicore.api.util.PrefixedIdGenerator",
         parameters = {
-            @Parameter(name = "prefix", value = "TAEPS-"),
+            @Parameter(name = "prefix", value = "TAEPS"),
             @Parameter(name = "sequence", value = "seq_tarifa_eps")
         }
     )

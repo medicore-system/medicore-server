@@ -104,12 +104,6 @@
       <version>2.5.0</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.mapstruct</groupId>
-      <artifactId>mapstruct</artifactId>
-      <version>1.5.5.Final</version>
-    </dependency>
-
   </dependencies>
 
   <build>
@@ -118,15 +112,6 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <configuration>
-          <source>17</source>
-          <target>17</target>
-          <annotationProcessorPaths>
-            <path>
-              <groupId>org.mapstruct</groupId>
-              <artifactId>mapstruct-processor</artifactId>
-              <version>1.5.5.Final</version>
-            </path>
-          </annotationProcessorPaths>
           <excludes>
             <exclude>
               <groupId>org.projectlombok</groupId>

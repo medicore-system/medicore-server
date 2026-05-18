@@ -2,7 +2,7 @@
 CREATE SEQUENCE seq_tarifa_eps START 1;
 -- Tabla para parametrizar la cobertura/acuerdo de una EPS sobre un Servicio
 CREATE TABLE tarifa_eps (
-    codigo VARCHAR(50) PRIMARY KEY DEFAULT 'TAEPS-' || nextval('seq_tarifa_eps'),
+    codigo VARCHAR(50) PRIMARY KEY DEFAULT 'TAEPS' || nextval('seq_tarifa_eps'),
     codigo_eps varchar(50) NOT NULL,
     codigo_servicio varchar(50) NOT NULL,
     porcentaje_cobertura DECIMAL(5,2) NOT NULL DEFAULT 100.00,
@@ -16,7 +16,7 @@ CREATE TABLE tarifa_eps (
 CREATE SEQUENCE seq_liquidacion START 1;
 -- Tabla para agrupar los cobros a una EPS en un periodo (Liquidación/Corte)
 CREATE TABLE liquidacion (
-    codigo VARCHAR(50) PRIMARY KEY DEFAULT 'LIQ-' || nextval('seq_liquidacion'),
+    codigo VARCHAR(50) PRIMARY KEY DEFAULT 'LIQ' || nextval('seq_liquidacion'),
     codigo_eps varchar(50) NOT NULL,
     fecha_inicio DATE NOT NULL,
     fecha_fin DATE NOT NULL,

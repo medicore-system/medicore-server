@@ -2,16 +2,26 @@ package com.medicore.api.mappers;
 
 import com.medicore.api.dtos.tarifa.TarifaEpsResponseDTO;
 import com.medicore.api.entities.costos.TarifaEps;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
+import org.springframework.stereotype.Component;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface TarifaEpsMapper {
+@Component
+public class TarifaEpsMapper {
 
-    @Mapping(source = "eps.codigo", target = "codigoEps")
-    @Mapping(source = "eps.nombre", target = "nombreEps")
-    @Mapping(source = "servicio.codigo", target = "codigoServicio")
-    @Mapping(source = "servicio.nombre", target = "nombreServicio")
-    TarifaEpsResponseDTO toResponseDTO(TarifaEps tarifaEps);
+    public TarifaEpsResponseDTO toResponseDTO(TarifaEps tarifaEps) {
+        if (tarifaEps == null) {
+            return null;
+        }
+
+        // Extraemos los datos de la entidad y armamos el DTO manualmente
+        return new TarifaEpsResponseDTO(
+                tarifaEps.getCodigo(),
+                tarifaEps.getEps().getCodigo(),
+                tarifaEps.getEps().getNombre(),
+                tarifaEps.getServicio().getCodigo(),
+                tarifaEps.getServicio().getNombre(),
+                tarifaEps.getPorcentajeCobertura(),
+                tarifaEps.getEstado(),
+                tarifaEps.getFechaCreacion()
+        );
+    }
 }
