@@ -73,8 +73,12 @@ public class Cita {
      * de la cita médica.</p>
      */
     @ManyToOne
-    @JoinColumn(name = "id_tipo", nullable = false)
+    @JoinColumn(name = "id_especialidad", nullable = false)
     private Especialidad especialidad;
+
+    @OneToOne
+    @JoinColumn(name = "id_tipo", nullable = false)
+    private TipoCita tipoCita;
 
     /**
      * Usuario/paciente asociado a la cita.
