@@ -74,6 +74,13 @@ public class ReportesController {
 
     @GetMapping("/estado-cartera")
     public ResponseEntity<List<EstadoCarteraDTO>> obtenerEstadoCartera() {
-        return ResponseEntity.ok(reporteService.obtenerEstadoCartera());
+        
+        List<EstadoCarteraDTO> reporte = reporteService.obtenerEstadoCartera();
+        
+        if (reporte.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        
+        return ResponseEntity.ok(reporte);
     }
 }
