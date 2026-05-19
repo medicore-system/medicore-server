@@ -29,4 +29,12 @@ public class TarifaEpsController {
         List<TarifaEpsResponseDTO> response = tarifaEpsService.obtenerTarifasActivasPorEps(codigoEps);
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping("/{codigo}")
+    public ResponseEntity<TarifaEpsResponseDTO> actualizarTarifa(
+            @PathVariable String codigo,
+            @Valid @RequestBody TarifaEpsRequestDTO request) {
+        TarifaEpsResponseDTO response = tarifaEpsService.actualizarTarifa(codigo, request);
+        return ResponseEntity.ok(response);
+    }
 }

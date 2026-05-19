@@ -32,15 +32,18 @@ public class TarifaEpsServiceImpl implements ITarifaEpsService {
     public TarifaEpsResponseDTO crearTarifa(TarifaEpsRequestDTO request) {
         // 1. Validar que la EPS exista
         Eps eps = epsRepository.findById(request.codigoEps())
-                .orElseThrow(() -> new RecursoNoEncontradoException("EPS no encontrada con el código: " + request.codigoEps()));
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "EPS no encontrada con el código: " + request.codigoEps()));
 
         // 2. Validar que el Servicio exista
         Servicio servicio = servicioRepository.findById(request.codigoServicio())
-                .orElseThrow(() -> new RecursoNoEncontradoException("Servicio no encontrado con el código: " + request.codigoServicio()));
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "Servicio no encontrado con el código: " + request.codigoServicio()));
 
         // 3. Validar Regla de Negocio: No duplicar tarifas para la misma EPS y Servicio
         if (tarifaEpsRepository.existsByEpsCodigoAndServicioCodigo(eps.getCodigo(), servicio.getCodigo())) {
-            // Reutilizamos IllegalArgumentException o podrías crear una TarifaDuplicadaException
+            // Reutilizamos IllegalArgumentException o podrías crear una
+            // TarifaDuplicadaException
             throw new IllegalArgumentException("Ya existe una tarifa configurada para esta EPS y este Servicio.");
         }
 
@@ -66,9 +69,21 @@ public class TarifaEpsServiceImpl implements ITarifaEpsService {
         }
 
         List<TarifaEps> tarifas = tarifaEpsRepository.findByEpsCodigoAndEstadoTrue(codigoEps);
-        
+
         return tarifas.stream()
                 .map(tarifaEpsMapper::toResponseDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public TarifaEpsResponseDTO actualizarTarifa(String codigo, TarifaEpsRequestDTO request) {
+        TarifaEps tarifa = tarifaEpsRepository.findById(codigo)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Tarifa no encontrada con el código: " + codigo));
+
+        tarifa.setPorcentajeCobertura(request.porcentajeCobertura());
+
+        TarifaEps tarifaActualizada = tarifaEpsRepository.save(tarifa);
+        return tarifaEpsMapper.toResponseDTO(tarifaActualizada);
     }
 }
