@@ -3,6 +3,7 @@ package com.medicore.api.controllers;
 import com.medicore.api.dtos.reportes.AtencionesEpsDTO;
 import com.medicore.api.dtos.reportes.IngresosEspecialidadDTO;
 import com.medicore.api.dtos.reportes.IngresosHospitalDTO;
+import com.medicore.api.dtos.reportes.ProductividadMedicoDTO;
 import com.medicore.api.services.IReporteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +54,20 @@ public class ReportesController {
             return ResponseEntity.noContent().build();
         }
 
+        return ResponseEntity.ok(reporte);
+    }
+
+    @GetMapping("/productividad-medica")
+    public ResponseEntity<List<ProductividadMedicoDTO>> obtenerProductividadMedica(
+            @RequestParam(name = "anio") int anio,
+            @RequestParam(name = "mes") int mes) {
+        
+        List<ProductividadMedicoDTO> reporte = reporteService.obtenerProductividadMedica(anio, mes);
+        
+        if (reporte.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        
         return ResponseEntity.ok(reporte);
     }
 }
