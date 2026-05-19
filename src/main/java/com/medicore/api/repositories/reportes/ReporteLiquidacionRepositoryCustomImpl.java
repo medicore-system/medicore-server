@@ -8,7 +8,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.*;
 import java.util.List;
 
-public class LiquidacionRepositoryCustomImpl implements LiquidacionRepositoryCustom {
+public class ReporteLiquidacionRepositoryCustomImpl implements ReporteLiquidacionRepositoryCustom {
 
     @PersistenceContext
     private EntityManager entityManager;
