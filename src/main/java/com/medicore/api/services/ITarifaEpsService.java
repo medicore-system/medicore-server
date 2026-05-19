@@ -8,4 +8,5 @@ import java.util.List;
 public interface ITarifaEpsService {
     TarifaEpsResponseDTO crearTarifa(TarifaEpsRequestDTO request);
     List<TarifaEpsResponseDTO> obtenerTarifasActivasPorEps(String codigoEps);
+    TarifaEpsResponseDTO actualizarTarifa(String codigo, TarifaEpsRequestDTO request);
 }
