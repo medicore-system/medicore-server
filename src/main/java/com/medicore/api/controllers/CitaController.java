@@ -2,12 +2,10 @@ package com.medicore.api.controllers;
 
 import com.medicore.api.dtos.cita.CitaCreateRequestDTO;
 import com.medicore.api.dtos.cita.CitaResponseDTO;
-import com.medicore.api.entities.Cita;
-import com.medicore.api.entities.Especialidad;
-import com.medicore.api.entities.Medico;
-import com.medicore.api.entities.Usuario;
+import com.medicore.api.entities.*;
 import com.medicore.api.entities.hospital.Hospital;
 import com.medicore.api.repositories.ICitaRepository;
+import com.medicore.api.repositories.ITipoCitaRepository;
 import com.medicore.api.repositories.IUsuarioRepository;
 import com.medicore.api.repositories.IMedicoRepository;
 import com.medicore.api.repositories.hospital.HospitalRepository;
@@ -56,6 +54,10 @@ public class CitaController {
     /**
      * Repositorio para la gestión de tipos de cita.
      */
+    private final ITipoCitaRepository tipoCitaRepository;
+    /**
+     * Repositorio para la gestión de tipos de cita.
+     */
     private final IEspecialidadService especialidadService;
     /**
      * Repositorio para la gestión de medicos.
@@ -85,6 +87,8 @@ public class CitaController {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         Especialidad e = especialidadService.findById(cita.getId_tipo())
                 .orElseThrow(() -> new RuntimeException("Tipo cita no encontrado"));
+        TipoCita tc = tipoCitaRepository.findById(cita.getId_tipo())
+                .orElseThrow(() -> new RuntimeException("Tipo cita no encontrado"));
         Medico m = medicoRepository.findById(cita.getDocumento_medico())
                 .orElseThrow(() -> new RuntimeException("Medico no encontrado"));
         Cita c = new Cita();
@@ -94,6 +98,7 @@ public class CitaController {
         c.setFecha(cita.getFecha());
         c.setCosto(cita.getCosto());
         c.setEspecialidad(e);
+        c.setTipoCita(tc);
         c.setUsuario(u);
         c.setMedico(m);
         c.setHospital(h);
@@ -186,7 +191,10 @@ public class CitaController {
         + cita.getFecha().getHour() + ":" + cita.getFecha().getMinute());
         responseDTO.setCosto(cita.getCosto());
         if(cita.getEspecialidad()!=null){
-            responseDTO.setTipoCita(cita.getEspecialidad()   .getNombre());
+            responseDTO.setEspecialidad(cita.getEspecialidad()   .getNombre());
+        }
+        if(cita.getTipoCita()!=null){
+            responseDTO.setTipoCita(cita.getTipoCita().getNombre());
         }
         if(cita.getUsuario()!=null){
             responseDTO.setNombreUsuario(cita.getUsuario().getNombre() + " " +  cita.getUsuario().getApellido());

@@ -27,6 +27,10 @@ public class CitaCreateRequestDTO {
      */
     private BigDecimal costo;
     /**
+     * identificador de la especialidad asociado a la cita médica.
+     */
+    private Integer id_especialidad;
+    /**
      * identificador del tipo asociado a la cita médica.
      */
     private Integer id_tipo;
