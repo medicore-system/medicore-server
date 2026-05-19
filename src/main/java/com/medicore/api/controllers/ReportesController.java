@@ -1,6 +1,7 @@
 package com.medicore.api.controllers;
 
 import com.medicore.api.dtos.reportes.AtencionesEpsDTO;
+import com.medicore.api.dtos.reportes.EstadoCarteraDTO;
 import com.medicore.api.dtos.reportes.IngresosEspecialidadDTO;
 import com.medicore.api.dtos.reportes.IngresosHospitalDTO;
 import com.medicore.api.dtos.reportes.ProductividadMedicoDTO;
@@ -49,7 +50,7 @@ public class ReportesController {
             @RequestParam(name = "anio") int anio) {
 
         List<AtencionesEpsDTO> reporte = reporteService.obtenerAtencionesPorEps(anio);
-
+ 
         if (reporte.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -61,13 +62,18 @@ public class ReportesController {
     public ResponseEntity<List<ProductividadMedicoDTO>> obtenerProductividadMedica(
             @RequestParam(name = "anio") int anio,
             @RequestParam(name = "mes") int mes) {
-        
+
         List<ProductividadMedicoDTO> reporte = reporteService.obtenerProductividadMedica(anio, mes);
-        
+
         if (reporte.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        
+
         return ResponseEntity.ok(reporte);
+    }
+
+    @GetMapping("/estado-cartera")
+    public ResponseEntity<List<EstadoCarteraDTO>> obtenerEstadoCartera() {
+        return ResponseEntity.ok(reporteService.obtenerEstadoCartera());
     }
 }

@@ -1,11 +1,13 @@
 package com.medicore.api.services.impl;
 
 import com.medicore.api.dtos.reportes.AtencionesEpsDTO;
+import com.medicore.api.dtos.reportes.EstadoCarteraDTO;
 import com.medicore.api.dtos.reportes.IngresosEspecialidadDTO;
 import com.medicore.api.dtos.reportes.IngresosHospitalDTO;
 import com.medicore.api.dtos.reportes.ProductividadMedicoDTO;
 import com.medicore.api.repositories.FacturaRepository;
 import com.medicore.api.repositories.ICitaRepository;
+import com.medicore.api.repositories.costos.LiquidacionRepository;
 import com.medicore.api.services.IReporteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ public class ReporteServiceImpl implements IReporteService {
 
     private final FacturaRepository facturaRepository;
     private final ICitaRepository citaRepository;
+    private final LiquidacionRepository liquidacionRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -74,5 +77,11 @@ public class ReporteServiceImpl implements IReporteService {
         }
 
         return citaRepository.obtenerProductividadMedicaPorMes(anio, mes);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<EstadoCarteraDTO> obtenerEstadoCartera() {
+        return liquidacionRepository.obtenerEstadoCarteraPorEps();
     }
 }
