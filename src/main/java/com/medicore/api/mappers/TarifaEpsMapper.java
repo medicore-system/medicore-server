@@ -12,7 +12,6 @@ public class TarifaEpsMapper {
             return null;
         }
 
-        // Extraemos los datos de la entidad y armamos el DTO manualmente
         return new TarifaEpsResponseDTO(
                 tarifaEps.getCodigo(),
                 tarifaEps.getEps().getCodigo(),

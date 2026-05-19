@@ -1,8 +1,11 @@
 package com.medicore.api.repositories.reportes;
 
+import com.medicore.api.dtos.reportes.IngresosEspecialidadDTO;
 import com.medicore.api.dtos.reportes.IngresosHospitalDTO;
 import com.medicore.api.entities.Factura;
 import com.medicore.api.entities.hospital.Hospital;
+import com.medicore.api.entities.Cita;
+import com.medicore.api.entities.Especialidad;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.*;
@@ -21,30 +24,50 @@ public class ReporteFacturaRepositoryCustomImpl implements ReporteFacturaReposit
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<IngresosHospitalDTO> query = cb.createQuery(IngresosHospitalDTO.class);
         Root<Factura> factura = query.from(Factura.class);
-        
-        Join<Factura, Hospital> hospital = factura.join("hospital");
 
-        // 1. Calculamos el rango de fechas en Java (POO Puro y elegante)
-        // NOTA: Si tu entidad Factura usa LocalDateTime en lugar de LocalDate,
-        // simplemente cambia esto por: LocalDateTime.of(anio, 1, 1, 0, 0)
+        Join<Factura, Hospital> hospital = factura.join("hospital");
+        
         LocalDate inicioAnio = LocalDate.of(anio, 1, 1);
         LocalDate finAnio = LocalDate.of(anio, 12, 31);
 
-        // 2. Proyección directa al Record
         query.select(cb.construct(
                 IngresosHospitalDTO.class,
                 hospital.get("codigo"),
                 hospital.get("nombre"),
                 cb.count(factura),
+                cb.sum(factura.get("costoTotal"))));
+
+        query.where(cb.between(factura.get("fecha"), inicioAnio, finAnio));
+
+        query.groupBy(hospital.get("codigo"), hospital.get("nombre"));
+        query.orderBy(cb.desc(cb.sum(factura.get("costoTotal"))));
+
+        return entityManager.createQuery(query).getResultList();
+    }
+
+    @Override
+    public List<IngresosEspecialidadDTO> obtenerIngresosPorEspecialidadYAnio(int anio) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<IngresosEspecialidadDTO> query = cb.createQuery(IngresosEspecialidadDTO.class);
+        Root<Factura> factura = query.from(Factura.class);
+
+        Join<Factura, Cita> cita = factura.join("cita");
+        Join<Cita, Especialidad> especialidad = cita.join("especialidad");
+
+        LocalDate inicioAnio = LocalDate.of(anio, 1, 1);
+        LocalDate finAnio = LocalDate.of(anio, 12, 31);
+
+        query.select(cb.construct(
+                IngresosEspecialidadDTO.class,
+                especialidad.get("id"),
+                especialidad.get("nombre"),
+                cb.count(factura),
                 cb.sum(factura.get("costoTotal"))
         ));
 
-        // 3. Filtro SARGable: Usamos BETWEEN en lugar de extraer el año
-        // Esto permite que la BD use índices y es agnóstico al motor SQL
         query.where(cb.between(factura.get("fecha"), inicioAnio, finAnio));
 
-        // 4. Agrupación y Ordenamiento
-        query.groupBy(hospital.get("codigo"), hospital.get("nombre"));
+        query.groupBy(especialidad.get("id"), especialidad.get("nombre"));
         query.orderBy(cb.desc(cb.sum(factura.get("costoTotal"))));
 
         return entityManager.createQuery(query).getResultList();

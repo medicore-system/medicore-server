@@ -1,5 +1,6 @@
 package com.medicore.api.controllers;
 
+import com.medicore.api.dtos.reportes.IngresosEspecialidadDTO;
 import com.medicore.api.dtos.reportes.IngresosHospitalDTO;
 import com.medicore.api.services.IReporteService;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +23,22 @@ public class ReportesController {
         List<IngresosHospitalDTO> reporte = reporteService.obtenerIngresosPorHospital(anio);
         
         if (reporte.isEmpty()) {
-            return ResponseEntity.noContent().build(); // Retorna 204 si no hay datos para ese año
+            return ResponseEntity.noContent().build();
         }
         
-        return ResponseEntity.ok(reporte); // Retorna 200 OK con la lista
+        return ResponseEntity.ok(reporte);
+    }
+
+    @GetMapping("/ingresos-especialidad")
+    public ResponseEntity<List<IngresosEspecialidadDTO>> obtenerIngresosEspecialidad(
+            @RequestParam(name = "anio") int anio) {
+        
+        List<IngresosEspecialidadDTO> reporte = reporteService.obtenerIngresosPorEspecialidad(anio);
+        
+        if (reporte.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        
+        return ResponseEntity.ok(reporte);
     }
 }
