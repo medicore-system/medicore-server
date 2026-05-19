@@ -47,6 +47,11 @@ public class CitaResponseDTO {
     private BigDecimal costo;
 
     /**
+     * Nombre de la especialidad de cita.
+     */
+    private String especialidad;
+
+    /**
      * Nombre del tipo de cita.
      */
     private String tipoCita;
