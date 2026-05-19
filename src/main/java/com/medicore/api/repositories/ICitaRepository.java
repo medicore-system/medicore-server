@@ -1,6 +1,7 @@
 package com.medicore.api.repositories;
 
 import com.medicore.api.entities.Cita;
+import com.medicore.api.repositories.reportes.ReporteCitaRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -17,7 +18,7 @@ import java.util.Optional;
  * @author Manuel
  */
 @Repository
-public interface ICitaRepository extends JpaRepository<Cita, String> {
+public interface ICitaRepository extends JpaRepository<Cita, String>, ReporteCitaRepositoryCustom {
 
     /**
      * Busca una cita asociada al documento de un usuario/paciente.
