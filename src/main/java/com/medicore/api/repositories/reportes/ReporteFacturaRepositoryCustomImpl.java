@@ -1,11 +1,14 @@
 package com.medicore.api.repositories.reportes;
 
+import com.medicore.api.dtos.reportes.AtencionesEpsDTO;
 import com.medicore.api.dtos.reportes.IngresosEspecialidadDTO;
 import com.medicore.api.dtos.reportes.IngresosHospitalDTO;
 import com.medicore.api.entities.Factura;
 import com.medicore.api.entities.hospital.Hospital;
 import com.medicore.api.entities.Cita;
+import com.medicore.api.entities.Eps;
 import com.medicore.api.entities.Especialidad;
+import com.medicore.api.entities.Eps;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.*;
@@ -26,7 +29,7 @@ public class ReporteFacturaRepositoryCustomImpl implements ReporteFacturaReposit
         Root<Factura> factura = query.from(Factura.class);
 
         Join<Factura, Hospital> hospital = factura.join("hospital");
-        
+
         LocalDate inicioAnio = LocalDate.of(anio, 1, 1);
         LocalDate finAnio = LocalDate.of(anio, 12, 31);
 
@@ -62,13 +65,40 @@ public class ReporteFacturaRepositoryCustomImpl implements ReporteFacturaReposit
                 especialidad.get("id"),
                 especialidad.get("nombre"),
                 cb.count(factura),
-                cb.sum(factura.get("costoTotal"))
-        ));
+                cb.sum(factura.get("costoTotal"))));
 
         query.where(cb.between(factura.get("fecha"), inicioAnio, finAnio));
 
         query.groupBy(especialidad.get("id"), especialidad.get("nombre"));
         query.orderBy(cb.desc(cb.sum(factura.get("costoTotal"))));
+
+        return entityManager.createQuery(query).getResultList();
+    }
+
+    @Override
+    public List<AtencionesEpsDTO> obtenerAtencionesPorEpsYAnio(int anio) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<AtencionesEpsDTO> query = cb.createQuery(AtencionesEpsDTO.class);
+        Root<Factura> factura = query.from(Factura.class);
+
+        Join<Factura, Eps> eps = factura.join("eps");
+
+        LocalDate inicioAnio = LocalDate.of(anio, 1, 1);
+        LocalDate finAnio = LocalDate.of(anio, 12, 31);
+
+        query.select(cb.construct(
+                AtencionesEpsDTO.class,
+                eps.get("codigo"),
+                eps.get("nombre"),
+                cb.count(factura),
+                cb.sum(factura.get("costoTotal"))
+        ));
+
+        query.where(cb.between(factura.get("fecha"), inicioAnio, finAnio));
+
+        query.groupBy(eps.get("codigo"), eps.get("nombre"));
+
+        query.orderBy(cb.desc(cb.count(factura)));
 
         return entityManager.createQuery(query).getResultList();
     }

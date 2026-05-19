@@ -1,5 +1,6 @@
 package com.medicore.api.controllers;
 
+import com.medicore.api.dtos.reportes.AtencionesEpsDTO;
 import com.medicore.api.dtos.reportes.IngresosEspecialidadDTO;
 import com.medicore.api.dtos.reportes.IngresosHospitalDTO;
 import com.medicore.api.services.IReporteService;
@@ -19,26 +20,39 @@ public class ReportesController {
     @GetMapping("/ingresos-hospital")
     public ResponseEntity<List<IngresosHospitalDTO>> obtenerIngresosHospital(
             @RequestParam(name = "anio") int anio) {
-        
+
         List<IngresosHospitalDTO> reporte = reporteService.obtenerIngresosPorHospital(anio);
-        
+
         if (reporte.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        
+
         return ResponseEntity.ok(reporte);
     }
 
     @GetMapping("/ingresos-especialidad")
     public ResponseEntity<List<IngresosEspecialidadDTO>> obtenerIngresosEspecialidad(
             @RequestParam(name = "anio") int anio) {
-        
+
         List<IngresosEspecialidadDTO> reporte = reporteService.obtenerIngresosPorEspecialidad(anio);
-        
+
         if (reporte.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        
+
+        return ResponseEntity.ok(reporte);
+    }
+
+    @GetMapping("/atenciones-eps")
+    public ResponseEntity<List<AtencionesEpsDTO>> obtenerAtencionesEps(
+            @RequestParam(name = "anio") int anio) {
+
+        List<AtencionesEpsDTO> reporte = reporteService.obtenerAtencionesPorEps(anio);
+
+        if (reporte.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
         return ResponseEntity.ok(reporte);
     }
 }

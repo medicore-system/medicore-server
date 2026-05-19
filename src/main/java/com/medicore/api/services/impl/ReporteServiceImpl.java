@@ -1,5 +1,6 @@
 package com.medicore.api.services.impl;
 
+import com.medicore.api.dtos.reportes.AtencionesEpsDTO;
 import com.medicore.api.dtos.reportes.IngresosEspecialidadDTO;
 import com.medicore.api.dtos.reportes.IngresosHospitalDTO;
 import com.medicore.api.repositories.FacturaRepository;
@@ -20,11 +21,12 @@ public class ReporteServiceImpl implements IReporteService {
     @Override
     @Transactional(readOnly = true)
     public List<IngresosHospitalDTO> obtenerIngresosPorHospital(int anio) {
-        
+
         int anioActual = LocalDate.now().getYear();
-        
+
         if (anio > anioActual || anio < 2000) {
-            throw new IllegalArgumentException("El año de consulta debe estar entre 2000 y el año actual (" + anioActual + ").");
+            throw new IllegalArgumentException(
+                    "El año de consulta debe estar entre 2000 y el año actual (" + anioActual + ").");
         }
 
         return facturaRepository.obtenerIngresosPorHospitalYAnio(anio);
@@ -34,11 +36,25 @@ public class ReporteServiceImpl implements IReporteService {
     @Transactional(readOnly = true)
     public List<IngresosEspecialidadDTO> obtenerIngresosPorEspecialidad(int anio) {
         int anioActual = LocalDate.now().getYear();
-        
+
         if (anio > anioActual || anio < 2000) {
-            throw new IllegalArgumentException("El año de consulta debe estar entre 2000 y el año actual (" + anioActual + ").");
+            throw new IllegalArgumentException(
+                    "El año de consulta debe estar entre 2000 y el año actual (" + anioActual + ").");
         }
 
         return facturaRepository.obtenerIngresosPorEspecialidadYAnio(anio);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<AtencionesEpsDTO> obtenerAtencionesPorEps(int anio) {
+        int anioActual = LocalDate.now().getYear();
+
+        if (anio > anioActual || anio < 2000) {
+            throw new IllegalArgumentException(
+                    "El año de consulta debe estar entre 2000 y el año actual (" + anioActual + ").");
+        }
+
+        return facturaRepository.obtenerAtencionesPorEpsYAnio(anio);
     }
 }
