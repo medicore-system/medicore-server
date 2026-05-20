@@ -1,6 +1,6 @@
 package com.medicore.api.services;
 
-import com.medicore.api.entities.Cita;
+import com.medicore.api.entities.Cita.Cita;
 
 import java.util.List;
 import java.util.Optional;
@@ -50,10 +50,20 @@ public interface ICitaService {
      * de un paciente.
      *
      * @param documento_paciente documento del paciente.
-     * @return Optional con la cita encontrada
+     * @return Lista de citas encontradas
      * o vacío si no existe.
      */
     List<Cita> findByDocumento(String documento_paciente);
+
+    /**
+     * Busca una cita asociada al documento
+     * de un medico.
+     *
+     * @param documento_medico documento del medico.
+     * @return Listade citas encontradas
+     * o vacío si no existe.
+     */
+    List<Cita> findByMedico(String documento_medico);
 
     /**
      * Aprueba una cita médica.

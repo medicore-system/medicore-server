@@ -1,5 +1,6 @@
 package com.medicore.api.entities;
 
+import com.medicore.api.entities.Cita.Cita;
 import com.medicore.api.entities.costos.Liquidacion;
 import com.medicore.api.entities.hospital.Hospital;
 import jakarta.persistence.*;

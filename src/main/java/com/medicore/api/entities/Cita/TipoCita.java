@@ -1,9 +1,11 @@
-package com.medicore.api.entities;
+package com.medicore.api.entities.Cita;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Table(name = "tipo_cita")
@@ -18,6 +20,6 @@ public class TipoCita {
     @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
 
-    @OneToOne(mappedBy = "tipoCita")
-    private Cita cita;
+    @OneToMany(mappedBy = "tipoCita")
+    private List<Cita> cita;
 }

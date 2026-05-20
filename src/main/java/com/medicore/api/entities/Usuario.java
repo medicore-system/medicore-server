@@ -1,5 +1,6 @@
 package com.medicore.api.entities;
 
+import com.medicore.api.entities.Cita.Cita;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
