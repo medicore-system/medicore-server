@@ -1,7 +1,6 @@
-package com.medicore.api.repositories;
+package com.medicore.api.repositories.cita;
 
-import com.medicore.api.entities.TipoCita;
-import lombok.RequiredArgsConstructor;
+import com.medicore.api.entities.Cita.TipoCita;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

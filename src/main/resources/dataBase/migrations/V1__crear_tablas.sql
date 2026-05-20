@@ -107,6 +107,8 @@ create table servicio (
     constraint fk_servicio_historial foreign key (codigo_historial) references historial_clinico(codigo)
 );
 
+CREATE SEQUENCE seq_cita START 1 INCREMENT 1;
+
 create table cita (
     codigo             varchar(50)   primary key,
     estado             varchar(20)   not null default 'PENDIENTE',
@@ -126,8 +128,8 @@ create table cita (
 );
 
 create table notificacion_cita (
-    codigo         varchar(50)  primary key,
-    estado         boolean      not null default true,
+    codigo         serial  primary key,
+    estado         boolean      not null default false,
     descripcion    varchar(50)  not null,
     correo_destino varchar(100) not null,
     codigo_cita    varchar(50)  not null,

@@ -6,7 +6,7 @@ import com.medicore.api.dtos.reportes.IngresosEspecialidadDTO;
 import com.medicore.api.dtos.reportes.IngresosHospitalDTO;
 import com.medicore.api.dtos.reportes.ProductividadMedicoDTO;
 import com.medicore.api.repositories.FacturaRepository;
-import com.medicore.api.repositories.ICitaRepository;
+import com.medicore.api.repositories.cita.ICitaRepository;
 import com.medicore.api.repositories.costos.LiquidacionRepository;
 import com.medicore.api.services.IReporteService;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,7 @@
 package com.medicore.api.repositories.reportes;
 
 import com.medicore.api.dtos.reportes.ProductividadMedicoDTO;
-import com.medicore.api.entities.Cita;
+import com.medicore.api.entities.Cita.Cita;
 import com.medicore.api.entities.Medico;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

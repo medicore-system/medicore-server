@@ -5,16 +5,14 @@ import com.medicore.api.dtos.reportes.IngresosEspecialidadDTO;
 import com.medicore.api.dtos.reportes.IngresosHospitalDTO;
 import com.medicore.api.entities.Factura;
 import com.medicore.api.entities.hospital.Hospital;
-import com.medicore.api.entities.Cita;
+import com.medicore.api.entities.Cita.Cita;
 import com.medicore.api.entities.Eps;
 import com.medicore.api.entities.Especialidad;
-import com.medicore.api.entities.Eps;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class ReporteFacturaRepositoryCustomImpl implements ReporteFacturaRepositoryCustom {
