@@ -1,7 +1,7 @@
 package com.medicore.api.entities.hospital;
 
 import com.medicore.api.entities.AsignacionMedico;
-import com.medicore.api.entities.Cita;
+import com.medicore.api.entities.Cita.Cita;
 import com.medicore.api.entities.Ciudad;
 import com.medicore.api.entities.areainterna.HospitalAreaInterna;
 import jakarta.persistence.*;

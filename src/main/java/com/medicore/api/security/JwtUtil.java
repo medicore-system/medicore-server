@@ -15,7 +15,10 @@ import javax.crypto.SecretKey; // Clave secreta para firmar y verificar el token
 import java.util.Date;         // Para manejar fechas de emisión y expiración
 import java.util.List;         // Para la lista de roles del usuario
 
-// Marca esta clase como componente de Spring para que pueda ser inyectada en otros beans
+/**
+ * Componente utilitario para la generación y validación de tokens JWT en MediCore.
+ * Usa HMAC-SHA con una clave secreta configurada en {@code application.properties}.
+ */
 @Component
 public class JwtUtil {
 

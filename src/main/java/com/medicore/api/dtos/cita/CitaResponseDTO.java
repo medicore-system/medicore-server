@@ -71,4 +71,9 @@ public class CitaResponseDTO {
      */
     private String Hospital;
 
+    /**
+     * Nombre de la ciudad donde se realizará la cita.
+     */
+    private String ciudad;
+
 }

@@ -23,6 +23,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Controlador REST para la gestión de asignaciones de médicos a hospitales en MediCore.
+ * Permite crear, consultar y desactivar asignaciones médicas con lógica de rotación automática.
+ */
 @RestController
 @RequestMapping("/asignaciones")
 @RequiredArgsConstructor
@@ -33,6 +37,14 @@ public class AsignacionMedicoController {
     private final ICiudadService ciudadService;
     private final HospitalRepository hospitalRepository;
 
+    /**
+     * Crea una nueva asignación de médico a un hospital.
+     * Calcula automáticamente las fechas, el hospital (round-robin si no se especifica)
+     * y el horario basado en el historial del médico.
+     *
+     * @param request datos de la asignación incluyendo documento del médico y ciudad
+     * @return asignación creada con estado HTTP 201
+     */
     @PostMapping
     public ResponseEntity<AsignacionMedicoResponseDTO> save(@RequestBody AsignacionMedicoRequestDTO request) {
 
@@ -86,6 +98,12 @@ public class AsignacionMedicoController {
         );
     }
 
+    /**
+     * Consulta todas las asignaciones de un médico por su número de documento.
+     *
+     * @param documento número de documento del médico
+     * @return lista de asignaciones del médico
+     */
     @GetMapping("/medico/{documento}")
     public ResponseEntity<List<AsignacionMedicoResponseDTO>> findByMedico(@PathVariable String documento) {
         return ResponseEntity.ok(
@@ -94,6 +112,12 @@ public class AsignacionMedicoController {
         );
     }
 
+    /**
+     * Consulta todas las asignaciones activas en un hospital específico.
+     *
+     * @param codigoHospital código del hospital
+     * @return lista de asignaciones del hospital
+     */
     @GetMapping("/hospital/{codigoHospital}")
     public ResponseEntity<List<AsignacionMedicoResponseDTO>> findByHospital(@PathVariable String codigoHospital) {
         return ResponseEntity.ok(
@@ -102,6 +126,12 @@ public class AsignacionMedicoController {
         );
     }
 
+    /**
+     * Desactiva una asignación médica por su código.
+     *
+     * @param codigo identificador de la asignación a desactivar
+     * @return 204 si fue desactivada, 404 si no existe
+     */
     @DeleteMapping("/{codigo}")
     public ResponseEntity<Void> desactivar(@PathVariable Integer codigo) {
         return asignacionMedicoService.desactivar(codigo)
@@ -109,6 +139,12 @@ public class AsignacionMedicoController {
                 : ResponseEntity.notFound().build();
     }
 
+    /**
+     * Convierte una entidad {@link AsignacionMedico} al DTO de respuesta.
+     *
+     * @param a entidad de asignación a convertir
+     * @return DTO con los datos de la asignación
+     */
     private AsignacionMedicoResponseDTO toResponse(AsignacionMedico a) {
         AsignacionMedicoResponseDTO dto = new AsignacionMedicoResponseDTO();
         dto.setCodigo(a.getCodigo());

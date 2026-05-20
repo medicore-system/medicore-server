@@ -8,11 +8,19 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.*;
 import java.util.List;
 
+/**
+ * Implementación de {@link ReporteLiquidacionRepositoryCustom} que usa JPA Criteria API
+ * para calcular el estado de cartera pendiente agrupado por EPS.
+ */
 public class ReporteLiquidacionRepositoryCustomImpl implements ReporteLiquidacionRepositoryCustom {
 
     @PersistenceContext
     private EntityManager entityManager;
 
+    /**
+     * {@inheritDoc}
+     * Suma el total de cobertura EPS de las liquidaciones en estado PENDIENTE, agrupadas por EPS.
+     */
     @Override
     public List<EstadoCarteraDTO> obtenerEstadoCarteraPorEps() {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();

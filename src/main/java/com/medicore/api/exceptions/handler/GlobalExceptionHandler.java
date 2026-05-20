@@ -13,9 +13,19 @@ import com.medicore.api.exceptions.ServicioDuplicadoException;
 
 import java.util.List;
 
+/**
+ * Manejador global de excepciones para todos los controladores REST de MediCore.
+ * Centraliza el manejo de errores y retorna respuestas HTTP estructuradas con {@link ApiErrorResponse}.
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    /**
+     * Maneja errores de validación de campos en el request body.
+     *
+     * @param ex excepción de validación con los campos inválidos
+     * @return respuesta HTTP 400 con la lista de errores de validación
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> handleValidacion(MethodArgumentNotValidException ex) {
         List<String> errores = ex.getBindingResult().getFieldErrors().stream()
@@ -30,6 +40,12 @@ public class GlobalExceptionHandler {
                 .build());
     }
 
+    /**
+     * Maneja la excepción de recurso no encontrado.
+     *
+     * @param ex excepción con el mensaje del recurso no encontrado
+     * @return respuesta HTTP 404
+     */
     @ExceptionHandler(RecursoNoEncontradoException.class)
     public ResponseEntity<ApiErrorResponse> handleNoEncontrado(RecursoNoEncontradoException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiErrorResponse.builder()

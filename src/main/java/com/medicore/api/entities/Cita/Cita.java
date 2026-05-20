@@ -1,10 +1,15 @@
-package com.medicore.api.entities;
+package com.medicore.api.entities.Cita;
 
+import com.medicore.api.entities.Especialidad;
+import com.medicore.api.entities.Medico;
+import com.medicore.api.entities.Usuario;
 import com.medicore.api.entities.hospital.Hospital;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -35,7 +40,15 @@ public class Cita {
      * Código único identificador de la cita.
      */
     @Id
-    @Column(name = "codigo", length = 50)
+    @GeneratedValue(generator = "cita_seq")
+    @GenericGenerator(
+            name = "cita_seq",
+            strategy = "com.medicore.api.util.PrefixedIdGenerator",
+            parameters = {
+                    @Parameter(name = "prefix", value = "CIT"),
+                    @Parameter(name = "sequence", value = "seq_cita")
+            }
+    )
     private String codigo;
 
     /**
@@ -76,7 +89,7 @@ public class Cita {
     @JoinColumn(name = "id_especialidad", nullable = false)
     private Especialidad especialidad;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "id_tipo", nullable = false)
     private TipoCita tipoCita;
 
@@ -103,4 +116,7 @@ public class Cita {
     @ManyToOne
     @JoinColumn(name = "codigo_hospital", nullable = false)
     private Hospital  hospital;
+
+    @OneToOne(mappedBy = "cita")
+    private NotificacionCita notificacionCita;
 }

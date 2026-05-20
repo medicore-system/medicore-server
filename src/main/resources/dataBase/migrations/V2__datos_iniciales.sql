@@ -40,12 +40,12 @@ insert into servicio (codigo, nombre, procedimiento, resultados, costo, codigo_h
     ('SRV002', 'hemograma completo', 'extraccion de muestra', 'valores dentro del rango normal', 45000.00, 'HC002');
 
 insert into cita (codigo, estado, fecha, costo, id_especialidad,id_tipo, documento_paciente, documento_medico, codigo_hospital) values
-    ('CIT001', 'PENDIENTE', '2024-06-01 08:00:00', 50000.00, 1,1, 'PAC001', 'MED001', 'HOS001'),
-    ('CIT002', 'PENDIENTE', '2024-06-02 10:30:00', 70000.00, 2,2, 'PAC002', 'MED002', 'HOS002');
+    ('CIT001', 'APROBADA', '2024-06-01 08:00:00', 50000.00, 1,1, 'PAC001', 'MED001', 'HOS001'),
+    ('CIT002', 'DENEGADA', '2024-06-02 10:30:00', 70000.00, 2,2, 'PAC002', 'MED002', 'HOS002');
 
-insert into notificacion_cita (codigo, estado, descripcion, correo_destino, codigo_cita) values
-    ('NOT001', true, 'recordatorio de cita medica',   'juan@correo.com',  'CIT001'),
-    ('NOT002', true, 'confirmacion de cita asignada', 'maria@correo.com', 'CIT002');
+insert into notificacion_cita (estado, descripcion, correo_destino, codigo_cita) values
+    (false, 'Su cita ha sido aprobada', 'juan@correo.com',  'CIT001'),
+    (false, 'Su cita ha sido denegada', 'maria@correo.com', 'CIT002');
 
 insert into horario_medico(horario, siguiente_horario) values
     ('8:00am - 4:00pm', '12:00am - 8:00am'),
