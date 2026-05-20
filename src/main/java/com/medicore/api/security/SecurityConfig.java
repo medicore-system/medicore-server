@@ -113,14 +113,25 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configuración de CORS para permitir peticiones desde el frontend.
+     *
+     * Permite:
+     * - Cualquier método HTTP
+     * - Cualquier header
+     * - Orígenes locales (localhost con cualquier puerto)
+     *
+     * @return CorsConfigurationSource configurado
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
 
-        config.addAllowedOrigin("http://localhost:4200"); // Angular
-        config.addAllowedMethod("*"); // GET, POST, PUT, DELETE...
-        config.addAllowedHeader("*");
+        CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
+        config.addAllowedOriginPattern("http://localhost:*");
+
+        config.addAllowedMethod("*");
+        config.addAllowedHeader("*");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
