@@ -167,6 +167,7 @@ public class AuthServiceImpl implements IAuthService {
         response.setToken(token);
         response.setCorreo(usuario.getCorreo());
         response.setRole(usuario.getRol());
+        response.setDocumento((usuario.getDocumento()));
 
         return response;
     }
