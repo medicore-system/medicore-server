@@ -27,69 +27,80 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class LiquidacionServiceImpl implements ILiquidacionService {
 
-    private final LiquidacionRepository liquidacionRepository;
-    private final FacturaRepository facturaRepository;
-    private final TarifaEpsRepository tarifaEpsRepository;
-    private final IEpsRepository epsRepository;
-    private final LiquidacionMapper liquidacionMapper;
+        private final LiquidacionRepository liquidacionRepository;
+        private final FacturaRepository facturaRepository;
+        private final TarifaEpsRepository tarifaEpsRepository;
+        private final IEpsRepository epsRepository;
+        private final LiquidacionMapper liquidacionMapper;
 
-    @Override
-    @Transactional
-    public LiquidacionResponseDTO generarLiquidacion(LiquidacionRequestDTO request) {
-        
-        Eps eps = epsRepository.findById(request.codigoEps())
-                .orElseThrow(() -> new RecursoNoEncontradoException("EPS no encontrada: " + request.codigoEps()));
+        @Override
+        @Transactional
+        public LiquidacionResponseDTO generarLiquidacion(LiquidacionRequestDTO request) {
 
-        List<Factura> facturasPendientes = facturaRepository.findByEpsCodigoAndFechaBetweenAndLiquidacionIsNull(
-                eps.getCodigo(), request.fechaInicio(), request.fechaFin()
-        );
+                Eps eps = epsRepository.findById(request.codigoEps())
+                                .orElseThrow(() -> new RecursoNoEncontradoException(
+                                                "EPS no encontrada: " + request.codigoEps()));
 
-        if (facturasPendientes.isEmpty()) {
-            throw new IllegalArgumentException("No hay facturas pendientes de cobro para esta EPS en el rango de fechas seleccionado.");
+                List<Factura> facturasPendientes = facturaRepository.findByEpsCodigoAndFechaBetweenAndLiquidacionIsNull(
+                                eps.getCodigo(), request.fechaInicio(), request.fechaFin());
+
+                if (facturasPendientes.isEmpty()) {
+                        throw new IllegalArgumentException(
+                                        "No hay facturas pendientes de cobro para esta EPS en el rango de fechas seleccionado.");
+                }
+
+                Map<String, BigDecimal> mapaTarifas = tarifaEpsRepository.findByEpsCodigoAndEstadoTrue(eps.getCodigo())
+                                .stream()
+                                .collect(Collectors.toMap(
+                                                tarifa -> tarifa.getServicio().getCodigo(),
+                                                TarifaEps::getPorcentajeCobertura));
+
+                BigDecimal totalBruto = BigDecimal.ZERO;
+                BigDecimal totalCoberturaEps = BigDecimal.ZERO;
+
+                for (Factura factura : facturasPendientes) {
+                        totalBruto = totalBruto.add(factura.getCostoTotal());
+
+                        String codigoServicio = factura.getServicio().getCodigo();
+
+                        BigDecimal porcentajeCobertura = mapaTarifas.getOrDefault(codigoServicio, BigDecimal.ZERO);
+
+                        BigDecimal cobertura = factura.getCostoTotal()
+                                        .multiply(porcentajeCobertura)
+                                        .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+
+                        totalCoberturaEps = totalCoberturaEps.add(cobertura);
+                }
+
+                BigDecimal totalCopagoPaciente = totalBruto.subtract(totalCoberturaEps);
+
+                Liquidacion nuevaLiquidacion = Liquidacion.builder()
+                                .eps(eps)
+                                .fechaInicio(request.fechaInicio())
+                                .fechaFin(request.fechaFin())
+                                .totalBruto(totalBruto)
+                                .totalCoberturaEps(totalCoberturaEps)
+                                .totalCopagoPaciente(totalCopagoPaciente)
+                                .estado("PENDIENTE") // Se cobrará posteriormente
+                                .facturas(facturasPendientes)
+                                .build();
+
+                Liquidacion liquidacionGuardada = liquidacionRepository.save(nuevaLiquidacion);
+
+                facturasPendientes.forEach(f -> f.setLiquidacion(liquidacionGuardada));
+                facturaRepository.saveAll(facturasPendientes);
+
+                return liquidacionMapper.toResponseDTO(liquidacionGuardada);
         }
 
-        Map<String, BigDecimal> mapaTarifas = tarifaEpsRepository.findByEpsCodigoAndEstadoTrue(eps.getCodigo())
-                .stream()
-                .collect(Collectors.toMap(
-                        tarifa -> tarifa.getServicio().getCodigo(),
-                        TarifaEps::getPorcentajeCobertura
-                ));
+        @Override
+        @Transactional(readOnly = true) // readOnly es excelente práctica para rendimiento en consultas GET
+        public List<LiquidacionResponseDTO> obtenerTodas() {
 
-        BigDecimal totalBruto = BigDecimal.ZERO;
-        BigDecimal totalCoberturaEps = BigDecimal.ZERO;
+                List<Liquidacion> liquidaciones = liquidacionRepository.findAll();
 
-        for (Factura factura : facturasPendientes) {
-            totalBruto = totalBruto.add(factura.getCostoTotal());
-
-            String codigoServicio = factura.getServicio().getCodigo();
-            
-            BigDecimal porcentajeCobertura = mapaTarifas.getOrDefault(codigoServicio, BigDecimal.ZERO);
-
-            BigDecimal cobertura = factura.getCostoTotal()
-                    .multiply(porcentajeCobertura)
-                    .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
-
-            totalCoberturaEps = totalCoberturaEps.add(cobertura);
+                return liquidaciones.stream()
+                                .map(liquidacionMapper::toResponseDTO)
+                                .collect(Collectors.toList());
         }
-
-        BigDecimal totalCopagoPaciente = totalBruto.subtract(totalCoberturaEps);
-
-        Liquidacion nuevaLiquidacion = Liquidacion.builder()
-                .eps(eps)
-                .fechaInicio(request.fechaInicio())
-                .fechaFin(request.fechaFin())
-                .totalBruto(totalBruto)
-                .totalCoberturaEps(totalCoberturaEps)
-                .totalCopagoPaciente(totalCopagoPaciente)
-                .estado("PENDIENTE") // Se cobrará posteriormente
-                .facturas(facturasPendientes)
-                .build();
-
-        Liquidacion liquidacionGuardada = liquidacionRepository.save(nuevaLiquidacion);
-
-        facturasPendientes.forEach(f -> f.setLiquidacion(liquidacionGuardada));
-        facturaRepository.saveAll(facturasPendientes);
-
-        return liquidacionMapper.toResponseDTO(liquidacionGuardada);
-    }
 }

@@ -5,6 +5,9 @@ import com.medicore.api.dtos.liquidacion.LiquidacionResponseDTO;
 import com.medicore.api.services.ILiquidacionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,5 +23,16 @@ public class LiquidacionController {
     public ResponseEntity<LiquidacionResponseDTO> generarLiquidacion(@RequestBody LiquidacionRequestDTO request) {
         LiquidacionResponseDTO response = liquidacionService.generarLiquidacion(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<LiquidacionResponseDTO>> obtenerHistorialLiquidaciones() {
+        List<LiquidacionResponseDTO> response = liquidacionService.obtenerTodas();
+
+        if (response.isEmpty()) {
+            return ResponseEntity.noContent().build(); // Retorna 204 si no hay historial
+        }
+
+        return ResponseEntity.ok(response); // Retorna 200 con la lista JSON
     }
 }
