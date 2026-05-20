@@ -8,4 +8,5 @@ import com.medicore.api.dtos.liquidacion.LiquidacionResponseDTO;
 public interface ILiquidacionService {
     LiquidacionResponseDTO generarLiquidacion(LiquidacionRequestDTO request);
     List<LiquidacionResponseDTO> obtenerTodas();
+    LiquidacionResponseDTO cambiarEstado(String codigo, String nuevoEstado);
 }

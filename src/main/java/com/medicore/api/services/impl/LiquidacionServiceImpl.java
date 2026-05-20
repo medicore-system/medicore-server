@@ -103,4 +103,21 @@ public class LiquidacionServiceImpl implements ILiquidacionService {
                                 .map(liquidacionMapper::toResponseDTO)
                                 .collect(Collectors.toList());
         }
+
+        @Override
+        @Transactional
+        public LiquidacionResponseDTO cambiarEstado(String codigo, String nuevoEstado) {
+                Liquidacion liquidacion = liquidacionRepository.findById(codigo)
+                                .orElseThrow(() -> new RecursoNoEncontradoException(
+                                                "Liquidación no encontrada con código: " + codigo));
+
+                if (!nuevoEstado.equals("PAGADA") && !nuevoEstado.equals("PENDIENTE")) {
+                        throw new IllegalArgumentException("Estado no permitido.");
+                }
+
+                liquidacion.setEstado(nuevoEstado);
+                Liquidacion guardada = liquidacionRepository.save(liquidacion);
+
+                return liquidacionMapper.toResponseDTO(guardada);
+        }
 }

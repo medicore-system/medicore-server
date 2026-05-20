@@ -35,4 +35,11 @@ public class LiquidacionController {
 
         return ResponseEntity.ok(response); // Retorna 200 con la lista JSON
     }
+
+    @PutMapping("/{codigo}/estado")
+    public ResponseEntity<LiquidacionResponseDTO> actualizarEstado(
+            @PathVariable String codigo,
+            @RequestParam String nuevoEstado) {
+        return ResponseEntity.ok(liquidacionService.cambiarEstado(codigo, nuevoEstado));
+    }
 }
