@@ -10,4 +10,5 @@ public class AuthResponseDTO {
     private String token;
     private String correo;
     private String role;
+    private String documento;
 }
