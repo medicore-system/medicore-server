@@ -9,4 +9,5 @@ public interface ILiquidacionService {
     LiquidacionResponseDTO generarLiquidacion(LiquidacionRequestDTO request);
     List<LiquidacionResponseDTO> obtenerTodas();
     LiquidacionResponseDTO cambiarEstado(String codigo, String nuevoEstado);
+    byte[] generarPdfLiquidacion(String codigo);
 }

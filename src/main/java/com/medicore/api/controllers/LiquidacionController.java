@@ -10,6 +10,9 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -41,5 +44,19 @@ public class LiquidacionController {
             @PathVariable String codigo,
             @RequestParam String nuevoEstado) {
         return ResponseEntity.ok(liquidacionService.cambiarEstado(codigo, nuevoEstado));
+    }
+
+    @GetMapping(value = "/{codigo}/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> descargarPdf(@PathVariable String codigo) {
+        byte[] pdfBytes = liquidacionService.generarPdfLiquidacion(codigo);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        // Le indicamos al navegador/cliente que es un archivo para descargar
+        headers.setContentDispositionFormData("attachment", "Liquidacion_" + codigo + ".pdf");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdfBytes);
     }
 }
