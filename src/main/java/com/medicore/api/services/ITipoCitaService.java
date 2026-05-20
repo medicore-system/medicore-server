@@ -4,6 +4,9 @@ import com.medicore.api.entities.Cita.TipoCita;
 
 import java.util.List;
 
+/**
+ * Interfaz de servicio que define las operaciones de gestión de tipos de cita en MediCore.
+ */
 public interface ITipoCitaService {
 
     /**

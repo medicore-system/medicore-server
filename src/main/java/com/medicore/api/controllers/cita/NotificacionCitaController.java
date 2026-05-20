@@ -21,6 +21,10 @@ import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Controlador REST para la gestión de notificaciones de citas en MediCore.
+ * Permite crear, consultar y eliminar notificaciones asociadas a citas médicas.
+ */
 @RestController
 @RequestMapping("notificacion")
 @RequiredArgsConstructor
@@ -29,6 +33,12 @@ public class NotificacionCitaController {
     private final INotificacionCitaService notificacionCitaService;
     private final ICitaRepository citaRepository;
 
+    /**
+     * Crea y guarda una nueva notificación de cita.
+     *
+     * @param request datos de la notificación incluyendo correo destino y código de cita
+     * @return notificación creada
+     */
     @PostMapping
     public ResponseEntity<NotificacionCitaResponseDTO> save(@RequestBody NotificacionCitaRequestDTO request) {
 
@@ -45,6 +55,12 @@ public class NotificacionCitaController {
         );
     }
 
+    /**
+     * Obtiene las notificaciones pendientes (no leídas) asociadas a un correo electrónico.
+     *
+     * @param correo dirección de correo del destinatario
+     * @return lista de notificaciones con estado pendiente
+     */
     @GetMapping("{correo}")
     public ResponseEntity<List<NotificacionCitaResponseDTO>> findByCorreo(@PathVariable String correo){
          List<NotificacionCitaResponseDTO> response= notificacionCitaService.findByCorreo(correo).stream()
@@ -54,6 +70,12 @@ public class NotificacionCitaController {
          return ResponseEntity.ok(response);
     }
 
+    /**
+     * Elimina una notificación de cita por su código.
+     *
+     * @param codigo identificador de la notificación a eliminar
+     * @return 204 si fue eliminada exitosamente, 404 si no existe
+     */
     @DeleteMapping("/{codigo}")
     public ResponseEntity<Void> delete(@PathVariable Integer codigo) {
         return notificacionCitaService.delete(codigo)
@@ -61,6 +83,12 @@ public class NotificacionCitaController {
                 : ResponseEntity.notFound().build();
     }
 
+    /**
+     * Convierte una entidad {@link NotificacionCita} al DTO de respuesta con información de la cita.
+     *
+     * @param notificacionCita entidad a convertir
+     * @return DTO con los datos de la notificación
+     */
     private NotificacionCitaResponseDTO toResponse(NotificacionCita  notificacionCita){
         NotificacionCitaResponseDTO responseDTO = new NotificacionCitaResponseDTO();
         responseDTO.setCodigo(notificacionCita.getCodigo());

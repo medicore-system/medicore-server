@@ -11,11 +11,19 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
 
+/**
+ * Implementación de {@link ReporteCitaRepositoryCustom} que usa JPA Criteria API
+ * para calcular la productividad médica a partir de las citas completadas.
+ */
 public class ReporteCitaRepositoryCustomImpl implements ReporteCitaRepositoryCustom {
 
     @PersistenceContext
     private EntityManager entityManager;
 
+    /**
+     * {@inheritDoc}
+     * Agrupa citas completadas por médico en el mes y año indicados.
+     */
     @Override
     public List<ProductividadMedicoDTO> obtenerProductividadMedicaPorMes(int anio, int mes) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();

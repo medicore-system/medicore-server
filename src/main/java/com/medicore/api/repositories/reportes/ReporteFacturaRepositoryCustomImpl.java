@@ -15,11 +15,19 @@ import jakarta.persistence.criteria.*;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Implementación de {@link ReporteFacturaRepositoryCustom} que usa JPA Criteria API
+ * para generar reportes financieros a partir de las facturas emitidas.
+ */
 public class ReporteFacturaRepositoryCustomImpl implements ReporteFacturaRepositoryCustom {
 
     @PersistenceContext
     private EntityManager entityManager;
 
+    /**
+     * {@inheritDoc}
+     * Agrupa facturas por hospital y calcula el total de ingresos del año.
+     */
     @Override
     public List<IngresosHospitalDTO> obtenerIngresosPorHospitalYAnio(int anio) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
