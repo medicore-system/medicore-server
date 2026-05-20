@@ -2,8 +2,11 @@ package com.medicore.api.controllers.cita;
 
 import com.medicore.api.dtos.cita.CitaCreateRequestDTO;
 import com.medicore.api.dtos.cita.CitaResponseDTO;
+import com.medicore.api.dtos.notificacionCita.NotificacionCitaRequestDTO;
+import com.medicore.api.dtos.notificacionCita.NotificacionCitaResponseDTO;
 import com.medicore.api.entities.*;
 import com.medicore.api.entities.Cita.Cita;
+import com.medicore.api.entities.Cita.NotificacionCita;
 import com.medicore.api.entities.Cita.TipoCita;
 import com.medicore.api.entities.hospital.Hospital;
 import com.medicore.api.repositories.cita.ICitaRepository;
@@ -13,6 +16,7 @@ import com.medicore.api.repositories.IMedicoRepository;
 import com.medicore.api.repositories.hospital.HospitalRepository;
 import com.medicore.api.services.ICitaService;
 import com.medicore.api.services.IEspecialidadService;
+import com.medicore.api.services.INotificacionCitaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 /**
  * Controlador REST encargado de gestionar las operaciones
@@ -40,6 +45,8 @@ public class CitaController {
      * Servicio encargado de la lógica de negocio de las citas.
      */
     private final ICitaService citaService;
+
+    private final INotificacionCitaService notificacionCitaService;
     /**
      * Repositorio para operaciones directas sobre citas.
      */
@@ -172,7 +179,12 @@ public class CitaController {
         return citaService.findByCodigo(codigo)
                 .map(existing -> {
                     existing.setEstado("APROBADA");
-                    return toResponse(citaService.save(existing));
+                    Cita guardada = citaService.save(existing);
+                    if(guardada.getUsuario() != null && guardada.getUsuario().getCorreo() != null){
+                        crearNotificacion(guardada,
+                        "tu Cita en " + guardada.getHospital().getNombre() + " ha sido APROBADA");
+                    }
+                    return toResponse(guardada);
                 })
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -191,7 +203,12 @@ public class CitaController {
         return citaService.findByCodigo(codigo)
                 .map(existing -> {
                     existing.setEstado("DENEGADA");
-                    return toResponse(citaService.save(existing));
+                    Cita guardada = citaService.save(existing);
+                    if(guardada.getUsuario() != null && guardada.getUsuario().getCorreo() != null){
+                        crearNotificacion(guardada,
+                                "tu Cita en " + guardada.getHospital().getNombre() + " ha sido DENEGADA");
+                    }
+                    return toResponse(guardada);
                 })
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -232,6 +249,15 @@ public class CitaController {
             responseDTO.setMedico(cita.getMedico().getNombre() + " " +  cita.getMedico().getApellido());
         }
         return responseDTO;
+    }
+
+    // Método privado para no repetir la lógica de creacion de notificaciones
+    private void crearNotificacion(Cita cita, String descripcion) {
+        NotificacionCita notificacion = new NotificacionCita();
+        notificacion.setCorreo(cita.getUsuario().getCorreo());
+        notificacion.setDescripcion(descripcion);
+        notificacion.setCita(cita);
+        notificacionCitaService.save(notificacion);
     }
 
 

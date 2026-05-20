@@ -11,4 +11,5 @@ public class NotificacionCitaResponseDTO {
     private String descripcion;
     private String correoDestino;
     private String codigoCita;
+    private String estadoCita;
 }

@@ -7,6 +7,7 @@ import com.medicore.api.services.INotificacionCitaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,7 +17,13 @@ public class NotificacionCitaServiceImpl implements INotificacionCitaService {
     private final INotificacionCitaRepository notificacionCitaRepository;
 
     @Override
-    public Optional<NotificacionCita> findByCorreo(String correo) {
+    public NotificacionCita save(NotificacionCita notificacionCita) {
+        notificacionCita.setEstado(false);
+        return notificacionCitaRepository.save(notificacionCita);
+    }
+
+    @Override
+    public List<NotificacionCita> findByCorreo(String correo) {
         return notificacionCitaRepository.findByCorreo(correo);
     }
 
