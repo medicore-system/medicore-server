@@ -1,7 +1,7 @@
 package com.medicore.api.services.impl;
 
-import com.medicore.api.entities.Cita;
-import com.medicore.api.repositories.ICitaRepository;
+import com.medicore.api.entities.Cita.Cita;
+import com.medicore.api.repositories.cita.ICitaRepository;
 import com.medicore.api.services.ICitaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -71,6 +71,11 @@ public class CitaServiceImpl implements ICitaService {
     @Override
     public List<Cita>findByDocumento(String documento_paciente) {
         return citaRepository.findByUsuarioDocumento(documento_paciente);
+    }
+
+    @Override
+    public List<Cita> findByMedico(String documento_medico) {
+        return citaRepository.findByMedicoDocumento(documento_medico);
     }
 
     /**

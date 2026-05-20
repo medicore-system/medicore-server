@@ -5,23 +5,29 @@ import com.medicore.api.dtos.reportes.IngresosEspecialidadDTO;
 import com.medicore.api.dtos.reportes.IngresosHospitalDTO;
 import com.medicore.api.entities.Factura;
 import com.medicore.api.entities.hospital.Hospital;
-import com.medicore.api.entities.Cita;
+import com.medicore.api.entities.Cita.Cita;
 import com.medicore.api.entities.Eps;
 import com.medicore.api.entities.Especialidad;
-import com.medicore.api.entities.Eps;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Implementación de {@link ReporteFacturaRepositoryCustom} que usa JPA Criteria API
+ * para generar reportes financieros a partir de las facturas emitidas.
+ */
 public class ReporteFacturaRepositoryCustomImpl implements ReporteFacturaRepositoryCustom {
 
     @PersistenceContext
     private EntityManager entityManager;
 
+    /**
+     * {@inheritDoc}
+     * Agrupa facturas por hospital y calcula el total de ingresos del año.
+     */
     @Override
     public List<IngresosHospitalDTO> obtenerIngresosPorHospitalYAnio(int anio) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();

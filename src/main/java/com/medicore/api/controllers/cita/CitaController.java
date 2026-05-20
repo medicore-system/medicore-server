@@ -1,25 +1,31 @@
-package com.medicore.api.controllers;
+package com.medicore.api.controllers.cita;
 
 import com.medicore.api.dtos.cita.CitaCreateRequestDTO;
 import com.medicore.api.dtos.cita.CitaResponseDTO;
+import com.medicore.api.dtos.notificacionCita.NotificacionCitaRequestDTO;
+import com.medicore.api.dtos.notificacionCita.NotificacionCitaResponseDTO;
 import com.medicore.api.entities.*;
+import com.medicore.api.entities.Cita.Cita;
+import com.medicore.api.entities.Cita.NotificacionCita;
+import com.medicore.api.entities.Cita.TipoCita;
 import com.medicore.api.entities.hospital.Hospital;
-import com.medicore.api.repositories.ICitaRepository;
-import com.medicore.api.repositories.ITipoCitaRepository;
+import com.medicore.api.repositories.cita.ICitaRepository;
+import com.medicore.api.repositories.cita.ITipoCitaRepository;
 import com.medicore.api.repositories.IUsuarioRepository;
 import com.medicore.api.repositories.IMedicoRepository;
 import com.medicore.api.repositories.hospital.HospitalRepository;
 import com.medicore.api.services.ICitaService;
 import com.medicore.api.services.IEspecialidadService;
+import com.medicore.api.services.INotificacionCitaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 /**
  * Controlador REST encargado de gestionar las operaciones
@@ -39,6 +45,8 @@ public class CitaController {
      * Servicio encargado de la lógica de negocio de las citas.
      */
     private final ICitaService citaService;
+
+    private final INotificacionCitaService notificacionCitaService;
     /**
      * Repositorio para operaciones directas sobre citas.
      */
@@ -67,34 +75,42 @@ public class CitaController {
     /**
      * Crea una nueva cita médica.
      *
-     * <p>El método:
+     * <p>CAMBIOS vs versión anterior:
      * <ul>
-     *     <li>Busca el hospital asociado.</li>
-     *     <li>Busca el usuario/paciente asociado.</li>
-     *     <li>Busca el tipo de cita.</li>
-     *     <li>Genera automáticamente un código para la cita.</li>
-     *     <li>Guarda la nueva cita en la base de datos.</li>
+     *   <li>Corrección de bug: se usaba {@code getId_tipo()} para buscar
+     *       la especialidad; ahora usa {@code getId_especialidad()}.</li>
+     *   <li>Validación de doble booking: se rechaza si el médico ya
+     *       tiene cita en ese mismo slot.</li>
      * </ul>
+     * </p>
      *
      * @param cita DTO con la información necesaria para crear la cita.
      * @return ResponseEntity con la cita creada y estado HTTP 201.
      */
     @PostMapping
-    public ResponseEntity<CitaResponseDTO> save(@RequestBody CitaCreateRequestDTO cita){
+    public ResponseEntity<CitaResponseDTO> save(@RequestBody CitaCreateRequestDTO cita) {
+
         Hospital h = hospitalRepository.findById(cita.getCodigo_hospital())
-                .orElseThrow(() -> new RuntimeException("Ciudad no encontrada"));
+                .orElseThrow(() -> new RuntimeException("Hospital no encontrado"));
+
         Usuario u = usuarioRepository.findById(cita.getDocumento_paciente())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        Especialidad e = especialidadService.findById(cita.getId_tipo())
-                .orElseThrow(() -> new RuntimeException("Tipo cita no encontrado"));
+
+        Especialidad e = especialidadService.findById(cita.getId_especialidad())
+                .orElseThrow(() -> new RuntimeException("Especialidad no encontrada"));
+
         TipoCita tc = tipoCitaRepository.findById(cita.getId_tipo())
-                .orElseThrow(() -> new RuntimeException("Tipo cita no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Tipo de cita no encontrado"));
+
         Medico m = medicoRepository.findById(cita.getDocumento_medico())
-                .orElseThrow(() -> new RuntimeException("Medico no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Médico no encontrado"));
+
+        if (citaRepository.existsByMedicoDocumentoAndFecha(
+                cita.getDocumento_medico(), cita.getFecha())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
         Cita c = new Cita();
-        int next = citaRepository.findMaxCodigoSquence() + 1;
-        String codigo = String.format("CIT%03d", next);
-        c.setCodigo(codigo);
         c.setFecha(cita.getFecha());
         c.setCosto(cita.getCosto());
         c.setEspecialidad(e);
@@ -103,7 +119,8 @@ public class CitaController {
         c.setMedico(m);
         c.setHospital(h);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(toResponse(citaService.save(c)));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(toResponse(citaService.save(c)));
     }
 
     /**
@@ -135,6 +152,21 @@ public class CitaController {
     }
 
     /**
+     * Busca una cita por el documento del paciente.
+     *
+     * @param documento_medico documento del paciente asociado a la cita.
+     * @return la cita encontrada o 404 si no existe.
+     */
+    @GetMapping("/medico/{documento_medico}")
+    public ResponseEntity<List<CitaResponseDTO>> findByMedico(@PathVariable String documento_medico){
+        List<CitaResponseDTO> response = citaService.findByMedico(documento_medico).stream()
+                .map(this::toResponse)
+                .toList();
+        System.out.println(response);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
      * Aprueba una cita médica.
      *
      * <p>El estado de la cita cambia a "APROBADA".</p>
@@ -147,7 +179,12 @@ public class CitaController {
         return citaService.findByCodigo(codigo)
                 .map(existing -> {
                     existing.setEstado("APROBADA");
-                    return toResponse(citaService.save(existing));
+                    Cita guardada = citaService.save(existing);
+                    if(guardada.getUsuario() != null && guardada.getUsuario().getCorreo() != null){
+                        crearNotificacion(guardada,
+                        "tu Cita en " + guardada.getHospital().getNombre() + " ha sido APROBADA");
+                    }
+                    return toResponse(guardada);
                 })
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -166,7 +203,12 @@ public class CitaController {
         return citaService.findByCodigo(codigo)
                 .map(existing -> {
                     existing.setEstado("DENEGADA");
-                    return toResponse(citaService.save(existing));
+                    Cita guardada = citaService.save(existing);
+                    if(guardada.getUsuario() != null && guardada.getUsuario().getCorreo() != null){
+                        crearNotificacion(guardada,
+                                "tu Cita en " + guardada.getHospital().getNombre() + " ha sido DENEGADA");
+                    }
+                    return toResponse(guardada);
                 })
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -201,11 +243,21 @@ public class CitaController {
         }
         if(cita.getHospital()!=null){
             responseDTO.setHospital(cita.getHospital().getNombre());
+            responseDTO.setCiudad(cita.getHospital().getCiudad().getNombre());
         }
         if(cita.getMedico()!=null){
             responseDTO.setMedico(cita.getMedico().getNombre() + " " +  cita.getMedico().getApellido());
         }
         return responseDTO;
+    }
+
+    // Método privado para no repetir la lógica de creacion de notificaciones
+    private void crearNotificacion(Cita cita, String descripcion) {
+        NotificacionCita notificacion = new NotificacionCita();
+        notificacion.setCorreo(cita.getUsuario().getCorreo());
+        notificacion.setDescripcion(descripcion);
+        notificacion.setCita(cita);
+        notificacionCitaService.save(notificacion);
     }
 
 
