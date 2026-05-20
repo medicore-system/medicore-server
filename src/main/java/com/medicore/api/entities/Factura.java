@@ -53,4 +53,12 @@ public class Factura {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "codigo_servicio", referencedColumnName = "codigo")
     private Servicio servicio;
+
+    @Column(name = "paciente_pago", nullable = false)
+    @Builder.Default
+    private Boolean pacientePago = false;
+
+    @Column(name = "valor_copago_pagado", precision = 12, scale = 2)
+    @Builder.Default
+    private BigDecimal valorCopagoPagado = BigDecimal.ZERO;
 }
