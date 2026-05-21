@@ -30,7 +30,7 @@ public interface FacturaRepository extends JpaRepository<Factura, String>, Repor
             String epsCodigo,
             LocalDate fechaInicio,
             LocalDate fechaFin
-    )
+    );
     @Query("SELECT f FROM Factura f WHERE f.cita.usuario.documento = :documentoPaciente AND f.pacientePago = false")
     List<Factura> findFacturasPendientesCaja(@Param("documentoPaciente") String documentoPaciente);
 }

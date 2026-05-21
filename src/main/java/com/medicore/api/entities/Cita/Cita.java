@@ -13,6 +13,8 @@ import org.hibernate.annotations.Parameter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+
 /**
  * Entidad que representa una cita médica dentro del sistema.
  *
@@ -117,6 +119,6 @@ public class Cita {
     @JoinColumn(name = "codigo_hospital", nullable = false)
     private Hospital  hospital;
 
-    @OneToOne(mappedBy = "cita")
-    private NotificacionCita notificacionCita;
+    @OneToMany(mappedBy = "cita")
+    private List<NotificacionCita> notificacionCita;
 }
