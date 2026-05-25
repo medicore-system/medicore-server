@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class HistorialController {
      *
      * @return lista de historiales con datos de paciente y médico.
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<HistorialResponse>> listar() {
         return ResponseEntity.ok(historialService.listarHistoriales());
@@ -40,6 +42,7 @@ public class HistorialController {
      *                documento del paciente y documento del médico.
      * @return historial creado con estado HTTP 201.
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<HistorialResponse> crear(@Valid @RequestBody HistorialRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)

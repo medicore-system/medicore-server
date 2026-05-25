@@ -8,6 +8,7 @@ import com.medicore.api.dtos.reportes.ProductividadMedicoDTO;
 import com.medicore.api.services.IReporteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public class ReportesController {
      * @param anio año para el cual se genera el reporte
      * @return lista de ingresos por hospital, o 204 si no hay datos
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/ingresos-hospital")
     public ResponseEntity<List<IngresosHospitalDTO>> obtenerIngresosHospital(
             @RequestParam(name = "anio") int anio) {
@@ -48,6 +50,7 @@ public class ReportesController {
      * @param anio año para el cual se genera el reporte
      * @return lista de ingresos por especialidad, o 204 si no hay datos
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/ingresos-especialidad")
     public ResponseEntity<List<IngresosEspecialidadDTO>> obtenerIngresosEspecialidad(
             @RequestParam(name = "anio") int anio) {
@@ -67,6 +70,7 @@ public class ReportesController {
      * @param anio año para el cual se genera el reporte
      * @return lista de atenciones por EPS, o 204 si no hay datos
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/atenciones-eps")
     public ResponseEntity<List<AtencionesEpsDTO>> obtenerAtencionesEps(
             @RequestParam(name = "anio") int anio) {
@@ -87,6 +91,7 @@ public class ReportesController {
      * @param mes  mes del reporte
      * @return lista de productividad por médico, o 204 si no hay datos
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/productividad-medica")
     public ResponseEntity<List<ProductividadMedicoDTO>> obtenerProductividadMedica(
             @RequestParam(name = "anio") int anio,
@@ -106,6 +111,7 @@ public class ReportesController {
      *
      * @return lista del estado de cartera, o 204 si no hay datos
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/estado-cartera")
     public ResponseEntity<List<EstadoCarteraDTO>> obtenerEstadoCartera() {
         

@@ -6,6 +6,7 @@ import com.medicore.api.repositories.IAsignacionMedicoRepository;
 import com.medicore.api.repositories.cita.ICitaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -72,6 +73,7 @@ public class DisponibilidadCitaController {
      * @param idEspecialidad ID de la especialidad seleccionada por el usuario.
      * @param idTipo         ID del tipo de cita seleccionado por el usuario.
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'PACIENTE')")
     @GetMapping("/slots/{idEspecialidad}/{idTipo}")
     public ResponseEntity<List<CitaSlotResponseDTO>> slots(
             @PathVariable Integer idEspecialidad,

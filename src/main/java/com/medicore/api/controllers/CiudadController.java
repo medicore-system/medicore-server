@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class CiudadController {
      *
      * @param buscar texto opcional para filtrar ciudades por nombre
      * @return lista de ciudades que coinciden con el criterio de búsqueda
+     * --
      */
     @GetMapping
     public ResponseEntity<List<CiudadResponseDTO>> listar(
@@ -45,6 +47,7 @@ public class CiudadController {
      * @param id código único de la ciudad
      * @return datos de la ciudad encontrada
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<CiudadResponseDTO> obtener(@PathVariable String id) {
         return ResponseEntity.ok(ciudadService.obtenerCiudad(id));
@@ -56,6 +59,7 @@ public class CiudadController {
      * @param request datos de la ciudad a crear
      * @return ciudad creada con estado HTTP 201
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<CiudadResponseDTO> crear(
             @Valid @RequestBody CiudadRequestDTO request) {
@@ -71,6 +75,7 @@ public class CiudadController {
      * @param request nuevos datos de la ciudad
      * @return ciudad actualizada
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<CiudadResponseDTO> editar(
             @PathVariable String id,
@@ -85,6 +90,7 @@ public class CiudadController {
      * @param id código de la ciudad a eliminar
      * @return respuesta vacía con estado HTTP 204
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable String id) {
         ciudadService.eliminarCiudad(id);

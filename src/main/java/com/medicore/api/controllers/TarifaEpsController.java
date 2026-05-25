@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class TarifaEpsController {
      * @param request datos de la tarifa a crear
      * @return tarifa creada con estado HTTP 201
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<TarifaEpsResponseDTO> crearTarifa(@Valid @RequestBody TarifaEpsRequestDTO request) {
         TarifaEpsResponseDTO response = tarifaEpsService.crearTarifa(request);
@@ -40,6 +42,7 @@ public class TarifaEpsController {
      * @param codigoEps código de la EPS
      * @return lista de tarifas activas de la EPS
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/eps/{codigoEps}")
     public ResponseEntity<List<TarifaEpsResponseDTO>> obtenerTarifasPorEps(@PathVariable String codigoEps) {
         List<TarifaEpsResponseDTO> response = tarifaEpsService.obtenerTarifasActivasPorEps(codigoEps);
@@ -53,6 +56,7 @@ public class TarifaEpsController {
      * @param request nuevos datos de la tarifa
      * @return tarifa actualizada
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{codigo}")
     public ResponseEntity<TarifaEpsResponseDTO> actualizarTarifa(
             @PathVariable String codigo,

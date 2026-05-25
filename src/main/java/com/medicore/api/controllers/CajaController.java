@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class CajaController {
 
     private final ICajaService cajaService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/pendientes/{documento}")
     public ResponseEntity<List<FacturaCajaDTO>> buscarPendientes(@PathVariable String documento) {
         List<FacturaCajaDTO> facturas = cajaService.buscarFacturasPendientesPorPaciente(documento);
@@ -26,6 +28,7 @@ public class CajaController {
         return ResponseEntity.ok(facturas);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/pagar/{codigoFactura}")
     public ResponseEntity<byte[]> procesarPagoCaja(@PathVariable String codigoFactura) {
         byte[] pdfBytes = cajaService.procesarPagoYGenerarRecibo(codigoFactura);
