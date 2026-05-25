@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -59,6 +60,7 @@ public class HospitalController {
      *         objeto {@link HospitalResponse} con la información del
      *         hospital recién creado en el cuerpo de la respuesta
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<HospitalResponse> createHospital(
             @Valid @RequestBody HospitalRequest request) {
@@ -81,6 +83,7 @@ public class HospitalController {
      *         {@link HospitalResponse} con la información actualizada
      *         del hospital en el cuerpo de la respuesta
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<HospitalResponse> updateHospital(
             @Valid @RequestBody HospitalUpdateRequest request,
@@ -97,6 +100,7 @@ public class HospitalController {
      *         los hospitales en el cuerpo de la respuesta. Si no hay
      *         hospitales registrados, la lista estará vacía
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<HospitalResponse>> getAllHospitals() {
         List<HospitalResponse> hospitals = hospitalService.getAllHospitals();
@@ -112,6 +116,7 @@ public class HospitalController {
      *         {@link HospitalResponse} con la información del hospital
      *         solicitado en el cuerpo de la respuesta
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<HospitalResponse> getHospitalByCodigo(
             @PathVariable("id") String codigo) {
@@ -130,6 +135,7 @@ public class HospitalController {
      *         las áreas internas del hospital en el cuerpo de la respuesta.
      *         Si el hospital no tiene áreas registradas, la lista estará vacía
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}/areas")
     public ResponseEntity<List<AreaInternaResponse>> getAreasByHospital(
             @PathVariable String id) {
@@ -153,6 +159,7 @@ public class HospitalController {
      *         objeto {@link AreaInternaResponse} con la información del
      *         área interna recién creada en el cuerpo de la respuesta
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/areas")
     public ResponseEntity<AreaInternaResponse> createArea(
             @PathVariable String id,
@@ -179,6 +186,7 @@ public class HospitalController {
      *         {@link AreaInternaResponse} con la información actualizada
      *         del área interna en el cuerpo de la respuesta
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}/areas/{areaId}")
     public ResponseEntity<AreaInternaResponse> updateArea(
             @PathVariable String id,

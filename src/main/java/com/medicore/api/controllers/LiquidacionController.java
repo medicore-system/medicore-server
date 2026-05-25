@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -32,6 +33,7 @@ public class LiquidacionController {
      * @param request datos necesarios para generar la liquidación
      * @return liquidación generada con estado HTTP 201
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<LiquidacionResponseDTO> generarLiquidacion(@RequestBody LiquidacionRequestDTO request) {
         LiquidacionResponseDTO response = liquidacionService.generarLiquidacion(request);
@@ -43,6 +45,7 @@ public class LiquidacionController {
      *
      * @return lista de liquidaciones o 204 si no hay registros
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<LiquidacionResponseDTO>> obtenerHistorialLiquidaciones() {
         List<LiquidacionResponseDTO> response = liquidacionService.obtenerTodas();
@@ -61,6 +64,7 @@ public class LiquidacionController {
      * @param nuevoEstado nuevo estado a asignar
      * @return liquidación con el estado actualizado
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{codigo}/estado")
     public ResponseEntity<LiquidacionResponseDTO> actualizarEstado(
             @PathVariable String codigo,
@@ -74,6 +78,7 @@ public class LiquidacionController {
      * @param codigo código de la liquidación
      * @return archivo PDF de la liquidación como arreglo de bytes
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(value = "/{codigo}/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> descargarPdf(@PathVariable String codigo) {
         byte[] pdfBytes = liquidacionService.generarPdfLiquidacion(codigo);

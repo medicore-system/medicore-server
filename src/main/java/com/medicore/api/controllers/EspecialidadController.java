@@ -5,6 +5,7 @@ import com.medicore.api.entities.Especialidad;
 import com.medicore.api.services.IEspecialidadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,6 +36,7 @@ public class EspecialidadController {
      *
      * @return lista de especialidades en formato DTO
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'PACIENTE')")
     @GetMapping
     public ResponseEntity<List<EspecialidadResponseDTO>> findAll() {
         List<EspecialidadResponseDTO> response = especialidadService.findAll()

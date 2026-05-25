@@ -7,6 +7,7 @@ import com.medicore.api.entities.Usuario;
 import com.medicore.api.services.IEpsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,7 @@ public class EpsController {
      * Obtiene todas las eps registradas.
      *
      * @return lista de eps en formato DTO.
+     * --
      */
     @GetMapping
     public ResponseEntity<List<EpsResponseDTO>> findAll(){
@@ -53,6 +55,7 @@ public class EpsController {
      * @param codigo codigo de la eps.
      * @return eps encontrada o respuesta 404 si no existe.
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{codigo}")
     public ResponseEntity<EpsResponseDTO> findById(@PathVariable String codigo){
         return epsService.findById(codigo)

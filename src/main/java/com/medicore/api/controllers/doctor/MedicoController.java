@@ -10,6 +10,7 @@ import com.medicore.api.services.IEspecialidadService;
 import com.medicore.api.services.IMedicoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class MedicoController   {
      *
      * @return lista completa de médicos
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<MedicoResponseDTO>> findAll() {
         List<MedicoResponseDTO> response = medicoService.findAll()
@@ -46,6 +48,7 @@ public class MedicoController   {
      *
      * @return lista de médicos activos
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/activos")
     public ResponseEntity<List<MedicoResponseDTO>> findAllActivos() {
         List<MedicoResponseDTO> response = medicoService.findAll()
@@ -63,6 +66,7 @@ public class MedicoController   {
      * @param documento número de documento del médico
      * @return datos del médico o 404 si no existe
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{documento}")
     public ResponseEntity<MedicoResponseDTO> findById(@PathVariable String documento) {
         return medicoService.findById(documento)
@@ -77,6 +81,7 @@ public class MedicoController   {
      * @param request datos del médico a crear, incluyendo especialidad y ciudad
      * @return datos del médico registrado
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<MedicoResponseDTO> save(@RequestBody MedicoRequestDTO request) {
 
@@ -112,6 +117,7 @@ public class MedicoController   {
      * @param request   nuevos datos del médico
      * @return datos actualizados del médico o 404 si no existe
      */
+    @PreAuthorize("hasRole('ADMIN')")
         @PutMapping("/{documento}")
         public ResponseEntity<MedicoResponseDTO> update(@PathVariable String documento,
                                                         @RequestBody MedicoRequestDTO request) {
@@ -147,6 +153,7 @@ public class MedicoController   {
      * @param documento número de documento del médico a eliminar
      * @return 204 si fue eliminado, 404 si no existe
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{documento}")
     public ResponseEntity<Void> delete(@PathVariable String documento) {
         return medicoService.delete(documento)

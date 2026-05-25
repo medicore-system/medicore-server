@@ -1,6 +1,7 @@
 package com.medicore.api.controllers;
 
 import com.medicore.api.services.HealthService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,6 +33,7 @@ public class HealthController {
      * @param ciudad nombre de la ciudad a verificar (por defecto "Manizales")
      * @return mapa con claves y valores que describen el estado del sistema
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/check")
     public Map<String, String> check(@RequestParam(defaultValue = "Manizales") String ciudad) {
         return healthService.checkSystemStatus(ciudad);

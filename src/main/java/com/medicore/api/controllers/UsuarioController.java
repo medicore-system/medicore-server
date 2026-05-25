@@ -12,6 +12,7 @@ import com.medicore.api.services.IUsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,6 +52,7 @@ public class UsuarioController {
      *
      * @return lista de usuarios en formato DTO.
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'PACIENTE')")
     @GetMapping
     public ResponseEntity<List<UsuarioResponseDTO>> findAll(){
         List<UsuarioResponseDTO> response = usuarioService.findAll().stream()
@@ -65,6 +67,7 @@ public class UsuarioController {
      * @param documento documento del usuario.
      * @return usuario encontrado o respuesta 404 si no existe.
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{documento}")
     public ResponseEntity<UsuarioResponseDTO> findByDocumento(@PathVariable String documento){
         return usuarioService.findByDocumento(documento)
@@ -86,6 +89,7 @@ public class UsuarioController {
      * @param request DTO con la información del usuario.
      * @return usuario creado con estado HTTP 201.
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<UsuarioResponseDTO> save(@RequestBody UsuarioCreateRequestDTO request){
 
@@ -122,6 +126,7 @@ public class UsuarioController {
      * @param request DTO con la nueva información.
      * @return usuario actualizado o 404 si no existe.
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{documento}")
     public ResponseEntity<UsuarioResponseDTO> update(@PathVariable String documento, @RequestBody UsuarioUpdateRequestDTO request){
         Ciudad ciudad = ciudadRepository.findById(request.getCodigo_ciudad())
@@ -151,6 +156,7 @@ public class UsuarioController {
      * @param documento documento del usuario.
      * @return usuario con el estado actualizado o 404 si no existe.
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/inhabilitar/{documento}")
     public ResponseEntity<UsuarioResponseDTO> inhabilitarUsuario(@PathVariable String documento){
         return usuarioService.findByDocumento(documento)
