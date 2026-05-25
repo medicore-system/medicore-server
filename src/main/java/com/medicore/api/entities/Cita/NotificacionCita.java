@@ -33,7 +33,7 @@ public class NotificacionCita {
     private String correo;
 
     /** Cita médica a la que hace referencia esta notificación. */
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "codigo_cita")
     private Cita cita;
 }
