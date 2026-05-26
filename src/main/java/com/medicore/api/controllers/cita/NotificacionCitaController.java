@@ -15,6 +15,7 @@ import com.medicore.api.services.ICitaService;
 import com.medicore.api.services.INotificacionCitaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.format.TextStyle;
@@ -39,6 +40,7 @@ public class NotificacionCitaController {
      * @param request datos de la notificación incluyendo correo destino y código de cita
      * @return notificación creada
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<NotificacionCitaResponseDTO> save(@RequestBody NotificacionCitaRequestDTO request) {
 
@@ -61,6 +63,7 @@ public class NotificacionCitaController {
      * @param correo dirección de correo del destinatario
      * @return lista de notificaciones con estado pendiente
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'PACIENTE')")
     @GetMapping("{correo}")
     public ResponseEntity<List<NotificacionCitaResponseDTO>> findByCorreo(@PathVariable String correo){
          List<NotificacionCitaResponseDTO> response= notificacionCitaService.findByCorreo(correo).stream()
@@ -76,6 +79,7 @@ public class NotificacionCitaController {
      * @param codigo identificador de la notificación a eliminar
      * @return 204 si fue eliminada exitosamente, 404 si no existe
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'PACIENTE')")
     @DeleteMapping("/{codigo}")
     public ResponseEntity<Void> delete(@PathVariable Integer codigo) {
         return notificacionCitaService.delete(codigo)

@@ -17,6 +17,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -45,6 +46,7 @@ public class AsignacionMedicoController {
      * @param request datos de la asignación incluyendo documento del médico y ciudad
      * @return asignación creada con estado HTTP 201
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<AsignacionMedicoResponseDTO> save(@RequestBody AsignacionMedicoRequestDTO request) {
 
@@ -104,6 +106,7 @@ public class AsignacionMedicoController {
      * @param documento número de documento del médico
      * @return lista de asignaciones del médico
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/medico/{documento}")
     public ResponseEntity<List<AsignacionMedicoResponseDTO>> findByMedico(@PathVariable String documento) {
         return ResponseEntity.ok(
@@ -118,6 +121,7 @@ public class AsignacionMedicoController {
      * @param codigoHospital código del hospital
      * @return lista de asignaciones del hospital
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/hospital/{codigoHospital}")
     public ResponseEntity<List<AsignacionMedicoResponseDTO>> findByHospital(@PathVariable String codigoHospital) {
         return ResponseEntity.ok(
@@ -132,6 +136,7 @@ public class AsignacionMedicoController {
      * @param codigo identificador de la asignación a desactivar
      * @return 204 si fue desactivada, 404 si no existe
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{codigo}")
     public ResponseEntity<Void> desactivar(@PathVariable Integer codigo) {
         return asignacionMedicoService.desactivar(codigo)

@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,6 +40,7 @@ public class ServicioController {
      * @param search término opcional de búsqueda.
      * @return lista de servicios.
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'PACIENTE')")
     @GetMapping
     public ResponseEntity<List<ServicioResponse>> getServices(
             @RequestParam(required = false) String search
@@ -52,6 +54,7 @@ public class ServicioController {
      * @param request datos del servicio a crear.
      * @return servicio creado con estado HTTP 201.
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ServicioResponse> createService(
             @Valid @RequestBody ServicioRequest request
@@ -66,6 +69,7 @@ public class ServicioController {
      * @param id código del servicio.
      * @return detalle del servicio.
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'PACIENTE')")
     @GetMapping("/{id}")
     public ResponseEntity<ServicioDetalleResponse> getServiceById(
             @PathVariable("id") String id
@@ -80,6 +84,7 @@ public class ServicioController {
      * @param request datos actualizados.
      * @return servicio actualizado.
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ServicioResponse> updateService(
             @PathVariable("id") String id,
@@ -94,6 +99,7 @@ public class ServicioController {
      * @param id código del servicio.
      * @return respuesta sin contenido si la operación fue exitosa.
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteService(
             @PathVariable("id") String id
@@ -107,6 +113,7 @@ public class ServicioController {
      *
      * @return lista de tipos de servicio.
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/types")
     public ResponseEntity<List<TipoServicioResponse>> getServiceTypes() {
         return ResponseEntity.ok(servicioService.listarTiposServicio());

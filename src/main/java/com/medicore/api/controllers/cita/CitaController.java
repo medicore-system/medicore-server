@@ -20,6 +20,7 @@ import com.medicore.api.services.INotificacionCitaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.format.TextStyle;
@@ -87,6 +88,7 @@ public class CitaController {
      * @param cita DTO con la información necesaria para crear la cita.
      * @return ResponseEntity con la cita creada y estado HTTP 201.
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'PACIENTE')")
     @PostMapping
     public ResponseEntity<CitaResponseDTO> save(@RequestBody CitaCreateRequestDTO cita) {
 
@@ -128,6 +130,7 @@ public class CitaController {
      *
      * @return lista de citas en formato DTO.
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<CitaResponseDTO>> findAll(){
         List<CitaResponseDTO> response = citaService.findAll().stream()
@@ -142,6 +145,7 @@ public class CitaController {
      * @param documento_paciente documento del paciente asociado a la cita.
      * @return la cita encontrada o 404 si no existe.
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'PACIENTE')")
     @GetMapping("/{documento_paciente}")
     public ResponseEntity<List<CitaResponseDTO>> findByDocumento(@PathVariable String documento_paciente){
         List<CitaResponseDTO> response = citaService.findByDocumento(documento_paciente).stream()
@@ -157,6 +161,7 @@ public class CitaController {
      * @param documento_medico documento del paciente asociado a la cita.
      * @return la cita encontrada o 404 si no existe.
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/medico/{documento_medico}")
     public ResponseEntity<List<CitaResponseDTO>> findByMedico(@PathVariable String documento_medico){
         List<CitaResponseDTO> response = citaService.findByMedico(documento_medico).stream()
@@ -174,6 +179,7 @@ public class CitaController {
      * @param codigo código único de la cita.
      * @return la cita actualizada o 404 si no existe.
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/aprobar/{codigo}")
     public ResponseEntity<CitaResponseDTO> aprobar(@PathVariable String codigo){
         return citaService.findByCodigo(codigo)
@@ -198,6 +204,7 @@ public class CitaController {
      * @param codigo código único de la cita.
      * @return la cita actualizada o 404 si no existe.
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'PACIENTE')")
     @PutMapping("/denegar/{codigo}")
     public ResponseEntity<CitaResponseDTO> denegar(@PathVariable String codigo){
         return citaService.findByCodigo(codigo)
